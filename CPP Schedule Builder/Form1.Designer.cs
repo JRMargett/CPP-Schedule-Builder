@@ -28,36 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             panel1 = new Panel();
+            button1 = new Button();
+            ClassIDTB = new TextBox();
+            label16 = new Label();
+            InstructorTB = new TextBox();
+            label15 = new Label();
+            EndAM_PMCB = new ComboBox();
+            StartAM_PMCB = new ComboBox();
+            EndTimeMin = new TextBox();
+            EndTimeHr = new TextBox();
+            label11 = new Label();
+            StartTimeMin = new TextBox();
+            label1 = new Label();
+            StartTimeHr = new TextBox();
+            DayCheckBox = new CheckedListBox();
+            label8 = new Label();
+            label7 = new Label();
+            label2 = new Label();
+            CourseNumber = new ComboBox();
             label12 = new Label();
             radioButton5 = new RadioButton();
             radioButton4 = new RadioButton();
             radioButton3 = new RadioButton();
             radioButton2 = new RadioButton();
-            button3 = new Button();
-            label11 = new Label();
             label10 = new Label();
-            comboBox5 = new ComboBox();
-            comboBox4 = new ComboBox();
-            label9 = new Label();
-            label8 = new Label();
-            label7 = new Label();
-            textBox2 = new TextBox();
-            button2 = new Button();
-            button1 = new Button();
-            listBox2 = new ListBox();
-            listBox1 = new ListBox();
+            LectureDisplay = new ListBox();
             label6 = new Label();
-            textBox1 = new TextBox();
-            comboBox3 = new ComboBox();
+            CourseSubject = new ComboBox();
             label5 = new Label();
             label4 = new Label();
             label3 = new Label();
-            label2 = new Label();
-            comboBox2 = new ComboBox();
             comboBox1 = new ComboBox();
-            label1 = new Label();
+            label9 = new Label();
+            comboBoxBindingSource1 = new BindingSource(components);
             panel2 = new Panel();
             dataGridView1 = new DataGridView();
             Sunday = new DataGridViewTextBoxColumn();
@@ -67,6 +73,7 @@
             Thursday = new DataGridViewTextBoxColumn();
             Friday = new DataGridViewTextBoxColumn();
             Saturday = new DataGridViewTextBoxColumn();
+            radioButton10 = new RadioButton();
             panel3 = new Panel();
             label14 = new Label();
             listBox3 = new ListBox();
@@ -75,55 +82,238 @@
             label13 = new Label();
             richTextBox1 = new RichTextBox();
             radioButton6 = new RadioButton();
+            comboBoxBindingSource = new BindingSource(components);
+            autoCompleteCustomSourceBindingSource = new BindingSource(components);
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource1).BeginInit();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)autoCompleteCustomSourceBindingSource).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(255, 184, 28);
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(button1);
+            panel1.Controls.Add(ClassIDTB);
+            panel1.Controls.Add(label16);
+            panel1.Controls.Add(InstructorTB);
+            panel1.Controls.Add(label15);
+            panel1.Controls.Add(EndAM_PMCB);
+            panel1.Controls.Add(StartAM_PMCB);
+            panel1.Controls.Add(EndTimeMin);
+            panel1.Controls.Add(EndTimeHr);
+            panel1.Controls.Add(label11);
+            panel1.Controls.Add(StartTimeMin);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(StartTimeHr);
+            panel1.Controls.Add(DayCheckBox);
+            panel1.Controls.Add(label8);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(CourseNumber);
             panel1.Controls.Add(label12);
             panel1.Controls.Add(radioButton5);
             panel1.Controls.Add(radioButton4);
             panel1.Controls.Add(radioButton3);
             panel1.Controls.Add(radioButton2);
-            panel1.Controls.Add(button3);
-            panel1.Controls.Add(label11);
             panel1.Controls.Add(label10);
-            panel1.Controls.Add(comboBox5);
-            panel1.Controls.Add(comboBox4);
-            panel1.Controls.Add(label9);
-            panel1.Controls.Add(label8);
-            panel1.Controls.Add(label7);
-            panel1.Controls.Add(textBox2);
-            panel1.Controls.Add(button2);
-            panel1.Controls.Add(button1);
-            panel1.Controls.Add(listBox2);
-            panel1.Controls.Add(listBox1);
+            panel1.Controls.Add(LectureDisplay);
             panel1.Controls.Add(label6);
-            panel1.Controls.Add(textBox1);
-            panel1.Controls.Add(comboBox3);
+            panel1.Controls.Add(CourseSubject);
             panel1.Controls.Add(label5);
             panel1.Controls.Add(label4);
             panel1.Controls.Add(label3);
-            panel1.Controls.Add(label2);
-            panel1.Controls.Add(comboBox2);
             panel1.Controls.Add(comboBox1);
-            panel1.Controls.Add(label1);
-            panel1.Location = new Point(12, 33);
+            panel1.Controls.Add(label9);
+            panel1.Location = new Point(12, 12);
             panel1.Name = "panel1";
-            panel1.Size = new Size(274, 487);
+            panel1.Size = new Size(482, 508);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
+            // 
+            // button1
+            // 
+            button1.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button1.Location = new Point(383, 198);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 53;
+            button1.Text = "Add";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
+            // 
+            // ClassIDTB
+            // 
+            ClassIDTB.Font = new Font("Segoe UI", 10F);
+            ClassIDTB.Location = new Point(110, 260);
+            ClassIDTB.Name = "ClassIDTB";
+            ClassIDTB.Size = new Size(79, 25);
+            ClassIDTB.TabIndex = 52;
+            ClassIDTB.TextChanged += textBox6_TextChanged;
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Font = new Font("Segoe UI", 15F);
+            label16.Location = new Point(110, 229);
+            label16.Name = "label16";
+            label16.Size = new Size(79, 28);
+            label16.TabIndex = 51;
+            label16.Text = "Class ID";
+            // 
+            // InstructorTB
+            // 
+            InstructorTB.Font = new Font("Segoe UI", 10F);
+            InstructorTB.Location = new Point(194, 260);
+            InstructorTB.Name = "InstructorTB";
+            InstructorTB.Size = new Size(243, 25);
+            InstructorTB.TabIndex = 50;
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Font = new Font("Segoe UI", 15F);
+            label15.Location = new Point(195, 229);
+            label15.Name = "label15";
+            label15.Size = new Size(96, 28);
+            label15.TabIndex = 49;
+            label15.Text = "Instructor";
+            label15.Click += label15_Click;
+            // 
+            // EndAM_PMCB
+            // 
+            EndAM_PMCB.Font = new Font("Segoe UI", 10F);
+            EndAM_PMCB.FormattingEnabled = true;
+            EndAM_PMCB.Items.AddRange(new object[] { "AM", "PM" });
+            EndAM_PMCB.Location = new Point(310, 201);
+            EndAM_PMCB.Name = "EndAM_PMCB";
+            EndAM_PMCB.Size = new Size(43, 25);
+            EndAM_PMCB.TabIndex = 48;
+            // 
+            // StartAM_PMCB
+            // 
+            StartAM_PMCB.Font = new Font("Segoe UI", 10F);
+            StartAM_PMCB.FormattingEnabled = true;
+            StartAM_PMCB.Items.AddRange(new object[] { "AM", "PM" });
+            StartAM_PMCB.Location = new Point(176, 201);
+            StartAM_PMCB.Name = "StartAM_PMCB";
+            StartAM_PMCB.Size = new Size(43, 25);
+            StartAM_PMCB.TabIndex = 47;
+            // 
+            // EndTimeMin
+            // 
+            EndTimeMin.Font = new Font("Segoe UI", 10F);
+            EndTimeMin.Location = new Point(268, 201);
+            EndTimeMin.Name = "EndTimeMin";
+            EndTimeMin.Size = new Size(36, 25);
+            EndTimeMin.TabIndex = 45;
+            // 
+            // EndTimeHr
+            // 
+            EndTimeHr.Font = new Font("Segoe UI", 10F);
+            EndTimeHr.Location = new Point(244, 201);
+            EndTimeHr.Name = "EndTimeHr";
+            EndTimeHr.Size = new Size(18, 25);
+            EndTimeHr.TabIndex = 44;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(261, 206);
+            label11.Name = "label11";
+            label11.Size = new Size(10, 15);
+            label11.TabIndex = 46;
+            label11.Text = ":";
+            // 
+            // StartTimeMin
+            // 
+            StartTimeMin.Font = new Font("Segoe UI", 10F);
+            StartTimeMin.Location = new Point(134, 201);
+            StartTimeMin.Name = "StartTimeMin";
+            StartTimeMin.Size = new Size(36, 25);
+            StartTimeMin.TabIndex = 42;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(226, 206);
+            label1.Name = "label1";
+            label1.Size = new Size(12, 15);
+            label1.TabIndex = 41;
+            label1.Text = "-";
+            // 
+            // StartTimeHr
+            // 
+            StartTimeHr.Font = new Font("Segoe UI", 10F);
+            StartTimeHr.Location = new Point(110, 201);
+            StartTimeHr.Name = "StartTimeHr";
+            StartTimeHr.Size = new Size(18, 25);
+            StartTimeHr.TabIndex = 40;
+            StartTimeHr.TextChanged += textBox1_TextChanged;
+            // 
+            // DayCheckBox
+            // 
+            DayCheckBox.BackColor = Color.FromArgb(255, 184, 28);
+            DayCheckBox.BorderStyle = BorderStyle.None;
+            DayCheckBox.Font = new Font("Segoe UI", 10F);
+            DayCheckBox.FormattingEnabled = true;
+            DayCheckBox.Items.AddRange(new object[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" });
+            DayCheckBox.Location = new Point(8, 199);
+            DayCheckBox.Name = "DayCheckBox";
+            DayCheckBox.Size = new Size(120, 100);
+            DayCheckBox.TabIndex = 39;
+            DayCheckBox.SelectedIndexChanged += checkedListBox1_SelectedIndexChanged;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 15F);
+            label8.Location = new Point(110, 168);
+            label8.Name = "label8";
+            label8.Size = new Size(62, 28);
+            label8.TabIndex = 38;
+            label8.Text = "Times";
+            label8.Click += label8_Click;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(317, 211);
+            label7.Name = "label7";
+            label7.Size = new Size(0, 15);
+            label7.TabIndex = 37;
+            label7.Click += label7_Click_1;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 15F);
+            label2.Location = new Point(7, 168);
+            label2.Name = "label2";
+            label2.Size = new Size(54, 28);
+            label2.TabIndex = 30;
+            label2.Text = "Days";
+            label2.Click += label2_Click;
+            // 
+            // CourseNumber
+            // 
+            CourseNumber.Font = new Font("Segoe UI", 15F);
+            CourseNumber.FormattingEnabled = true;
+            CourseNumber.Location = new Point(96, 129);
+            CourseNumber.Name = "CourseNumber";
+            CourseNumber.Size = new Size(379, 36);
+            CourseNumber.TabIndex = 28;
+            CourseNumber.SelectedIndexChanged += CourseNumber_SelectedIndexChanged;
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(110, 306);
+            label12.Location = new Point(342, 315);
             label12.Name = "label12";
             label12.Size = new Size(76, 15);
             label12.TabIndex = 27;
@@ -132,7 +322,7 @@
             // radioButton5
             // 
             radioButton5.AutoSize = true;
-            radioButton5.Location = new Point(110, 399);
+            radioButton5.Location = new Point(342, 408);
             radioButton5.Name = "radioButton5";
             radioButton5.Size = new Size(120, 19);
             radioButton5.TabIndex = 26;
@@ -143,7 +333,7 @@
             // radioButton4
             // 
             radioButton4.AutoSize = true;
-            radioButton4.Location = new Point(110, 374);
+            radioButton4.Location = new Point(342, 383);
             radioButton4.Name = "radioButton4";
             radioButton4.Size = new Size(79, 19);
             radioButton4.TabIndex = 25;
@@ -154,7 +344,7 @@
             // radioButton3
             // 
             radioButton3.AutoSize = true;
-            radioButton3.Location = new Point(110, 349);
+            radioButton3.Location = new Point(342, 358);
             radioButton3.Name = "radioButton3";
             radioButton3.Size = new Size(99, 19);
             radioButton3.TabIndex = 24;
@@ -165,7 +355,7 @@
             // radioButton2
             // 
             radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(110, 324);
+            radioButton2.Location = new Point(342, 333);
             radioButton2.Name = "radioButton2";
             radioButton2.Size = new Size(103, 19);
             radioButton2.TabIndex = 23;
@@ -173,158 +363,66 @@
             radioButton2.Text = "Min Commute";
             radioButton2.UseVisualStyleBackColor = true;
             // 
-            // button3
-            // 
-            button3.Location = new Point(113, 277);
-            button3.Name = "button3";
-            button3.Size = new Size(75, 23);
-            button3.TabIndex = 22;
-            button3.Text = "Clear";
-            button3.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            label11.AutoSize = true;
-            label11.Location = new Point(3, 216);
-            label11.Name = "label11";
-            label11.Size = new Size(83, 15);
-            label11.TabIndex = 21;
-            label11.Text = "Search Output";
-            // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(3, 306);
+            label10.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label10.Location = new Point(7, 302);
             label10.Name = "label10";
-            label10.Size = new Size(96, 15);
+            label10.Size = new Size(171, 28);
             label10.TabIndex = 20;
             label10.Text = "Selected Courses";
             // 
-            // comboBox5
+            // LectureDisplay
             // 
-            comboBox5.FormattingEnabled = true;
-            comboBox5.Location = new Point(113, 190);
-            comboBox5.Name = "comboBox5";
-            comboBox5.Size = new Size(75, 23);
-            comboBox5.TabIndex = 19;
-            // 
-            // comboBox4
-            // 
-            comboBox4.FormattingEnabled = true;
-            comboBox4.Location = new Point(3, 190);
-            comboBox4.Name = "comboBox4";
-            comboBox4.Size = new Size(104, 23);
-            comboBox4.TabIndex = 18;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(110, 170);
-            label9.Name = "label9";
-            label9.Size = new Size(85, 15);
-            label9.TabIndex = 17;
-            label9.Text = "Attribute Value";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Location = new Point(3, 170);
-            label8.Name = "label8";
-            label8.Size = new Size(94, 15);
-            label8.TabIndex = 16;
-            label8.Text = "Course Attribute";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Location = new Point(3, 126);
-            label7.Name = "label7";
-            label7.Size = new Size(90, 15);
-            label7.TabIndex = 15;
-            label7.Text = "Proffesor Name";
-            // 
-            // textBox2
-            // 
-            textBox2.Location = new Point(3, 144);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(185, 23);
-            textBox2.TabIndex = 14;
-            // 
-            // button2
-            // 
-            button2.Location = new Point(113, 248);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 13;
-            button2.Text = "Add";
-            button2.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(113, 219);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 12;
-            button1.Text = "Search";
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // listBox2
-            // 
-            listBox2.FormattingEnabled = true;
-            listBox2.ItemHeight = 15;
-            listBox2.Location = new Point(3, 234);
-            listBox2.Name = "listBox2";
-            listBox2.Size = new Size(104, 64);
-            listBox2.TabIndex = 11;
-            // 
-            // listBox1
-            // 
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(3, 324);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(104, 154);
-            listBox1.TabIndex = 10;
+            LectureDisplay.Font = new Font("Segoe UI", 10F);
+            LectureDisplay.FormattingEnabled = true;
+            LectureDisplay.ItemHeight = 17;
+            LectureDisplay.Location = new Point(8, 333);
+            LectureDisplay.Name = "LectureDisplay";
+            LectureDisplay.Size = new Size(330, 157);
+            LectureDisplay.TabIndex = 10;
+            LectureDisplay.SelectedIndexChanged += listBox1_SelectedIndexChanged;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(92, 82);
+            label6.Font = new Font("Segoe UI", 15F);
+            label6.Location = new Point(96, 98);
             label6.Name = "label6";
-            label6.Size = new Size(91, 15);
+            label6.Size = new Size(149, 28);
             label6.TabIndex = 9;
             label6.Text = "Course Number";
             // 
-            // textBox1
+            // CourseSubject
             // 
-            textBox1.Location = new Point(92, 100);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(100, 23);
-            textBox1.TabIndex = 8;
-            // 
-            // comboBox3
-            // 
-            comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(3, 100);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(83, 23);
-            comboBox3.TabIndex = 7;
+            CourseSubject.Font = new Font("Segoe UI", 15F);
+            CourseSubject.FormattingEnabled = true;
+            CourseSubject.Items.AddRange(new object[] { "ABM", "ACC", "AG", "AGS", "AHS", "AMM", "ANT", "ARC", "ARO", "AST", "AVS", "BIO", "BUS", "CE", "CHE", "CHM", "CHN", "CIS", "CLS", "COM", "CPU", "CRM", "CS", "DAN", "EBZ", "EC", "ECE", "ECI", "ECS", "EDD", "EDL", "EDU", "EGR", "EMM", "EMT", "ENG", "ENV", "ERA", "ETE", "ETM", "EWS", "FRE", "FRL", "FST", "GBA", "GEO", "GER", "GSC", "HRT", "HST", "IAM", "IBM", "IE", "IGE", "IME", "INA", "KIN", "LA", "LIB", "LRC", "LS", "MAE", "MAT", "ME", "MFE", "MHR", "MPA", "MSL", "MTE", "MU", "NTR", "PHL", "PHY", "PLS", "PLT", "PSY", "RS", "SCI", "SE", "SME", "SOC", "SPN", "STA", "STS", "SW", "TH", "TOM", "URP", "VCD" });
+            CourseSubject.Location = new Point(7, 129);
+            CourseSubject.Name = "CourseSubject";
+            CourseSubject.Size = new Size(83, 36);
+            CourseSubject.TabIndex = 7;
+            CourseSubject.SelectedIndexChanged += CourseSubject_SelectedIndexChanged;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(3, 82);
+            label5.Font = new Font("Segoe UI", 15F);
+            label5.Location = new Point(5, 98);
             label5.Name = "label5";
-            label5.Size = new Size(46, 15);
+            label5.Size = new Size(77, 28);
             label5.TabIndex = 6;
             label5.Text = "Subject";
             // 
             // label4
             // 
             label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             label4.Location = new Point(3, 0);
             label4.Name = "label4";
-            label4.Size = new Size(68, 15);
+            label4.RightToLeft = RightToLeft.Yes;
+            label4.Size = new Size(122, 28);
             label4.TabIndex = 5;
             label4.Text = "Select Term";
             label4.Click += label4_Click;
@@ -332,57 +430,48 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(3, 62);
+            label3.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+            label3.Location = new Point(5, 70);
             label3.Name = "label3";
-            label3.Size = new Size(140, 15);
+            label3.Size = new Size(123, 28);
             label3.TabIndex = 4;
-            label3.Text = "Add Classes to Search for";
+            label3.Text = "Add Classes";
             label3.Click += label3_Click;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(106, 18);
-            label2.Name = "label2";
-            label2.Size = new Size(29, 15);
-            label2.TabIndex = 3;
-            label2.Text = "Year";
-            // 
-            // comboBox2
-            // 
-            comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(92, 36);
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(57, 23);
-            comboBox2.TabIndex = 2;
             // 
             // comboBox1
             // 
+            comboBox1.Font = new Font("Segoe UI", 15F);
             comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "Spring", "Summer", "Fall", "Winter" });
-            comboBox1.Location = new Point(3, 36);
+            comboBox1.IntegralHeight = false;
+            comboBox1.Items.AddRange(new object[] { "Spring 2026", "Summer 2026", "Fall 2026", "Winter 2026" });
+            comboBox1.Location = new Point(5, 31);
             comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(83, 23);
+            comboBox1.Size = new Size(242, 36);
             comboBox1.TabIndex = 1;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
-            // label1
+            // label9
             // 
-            label1.AutoSize = true;
-            label1.FlatStyle = FlatStyle.Flat;
-            label1.Location = new Point(16, 18);
-            label1.Name = "label1";
-            label1.Size = new Size(55, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Semester";
+            label9.AutoSize = true;
+            label9.Location = new Point(127, 206);
+            label9.Name = "label9";
+            label9.Size = new Size(10, 15);
+            label9.TabIndex = 43;
+            label9.Text = ":";
+            // 
+            // comboBoxBindingSource1
+            // 
+            comboBoxBindingSource1.DataSource = typeof(ComboBox);
             // 
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(255, 184, 28);
             panel2.BorderStyle = BorderStyle.Fixed3D;
             panel2.Controls.Add(dataGridView1);
-            panel2.Location = new Point(303, 35);
+            panel2.Controls.Add(radioButton10);
+            panel2.Location = new Point(500, 12);
             panel2.Name = "panel2";
-            panel2.Size = new Size(593, 372);
+            panel2.Size = new Size(593, 393);
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
             // 
@@ -439,6 +528,18 @@
             Saturday.Name = "Saturday";
             Saturday.Width = 75;
             // 
+            // radioButton10
+            // 
+            radioButton10.AutoSize = true;
+            radioButton10.Font = new Font("Segoe UI", 15F);
+            radioButton10.Location = new Point(120, 130);
+            radioButton10.Name = "radioButton10";
+            radioButton10.Size = new Size(157, 32);
+            radioButton10.TabIndex = 34;
+            radioButton10.TabStop = true;
+            radioButton10.Text = "radioButton10";
+            radioButton10.UseVisualStyleBackColor = true;
+            // 
             // panel3
             // 
             panel3.BackColor = Color.FromArgb(255, 184, 28);
@@ -446,7 +547,7 @@
             panel3.Controls.Add(label14);
             panel3.Controls.Add(listBox3);
             panel3.Controls.Add(radioButton1);
-            panel3.Location = new Point(303, 422);
+            panel3.Location = new Point(500, 420);
             panel3.Name = "panel3";
             panel3.Size = new Size(298, 100);
             panel3.TabIndex = 2;
@@ -487,7 +588,7 @@
             panel4.Controls.Add(label13);
             panel4.Controls.Add(richTextBox1);
             panel4.Controls.Add(radioButton6);
-            panel4.Location = new Point(607, 422);
+            panel4.Location = new Point(804, 420);
             panel4.Name = "panel4";
             panel4.Size = new Size(289, 100);
             panel4.TabIndex = 3;
@@ -508,6 +609,7 @@
             richTextBox1.Size = new Size(255, 71);
             richTextBox1.TabIndex = 17;
             richTextBox1.Text = "";
+            richTextBox1.TextChanged += richTextBox1_TextChanged;
             // 
             // radioButton6
             // 
@@ -520,12 +622,21 @@
             radioButton6.Text = "radioButton6";
             radioButton6.UseVisualStyleBackColor = true;
             // 
+            // comboBoxBindingSource
+            // 
+            comboBoxBindingSource.DataSource = typeof(ComboBox);
+            // 
+            // autoCompleteCustomSourceBindingSource
+            // 
+            autoCompleteCustomSourceBindingSource.DataMember = "AutoCompleteCustomSource";
+            autoCompleteCustomSourceBindingSource.DataSource = comboBoxBindingSource;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(0, 80, 48);
-            ClientSize = new Size(908, 532);
+            ClientSize = new Size(1105, 532);
             Controls.Add(panel4);
             Controls.Add(panel3);
             Controls.Add(panel2);
@@ -537,12 +648,16 @@
             Load += Form1_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource1).EndInit();
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)autoCompleteCustomSourceBindingSource).EndInit();
             ResumeLayout(false);
         }
 
@@ -552,7 +667,6 @@
         private Panel panel2;
         private Panel panel3;
         private DataGridView dataGridView1;
-        private Label label1;
         private DataGridViewTextBoxColumn Sunday;
         private DataGridViewTextBoxColumn Monday;
         private DataGridViewTextBoxColumn Tuesday;
@@ -560,29 +674,15 @@
         private DataGridViewTextBoxColumn Thursday;
         private DataGridViewTextBoxColumn Friday;
         private DataGridViewTextBoxColumn Saturday;
-        private Label label2;
-        private ComboBox comboBox2;
         private ComboBox comboBox1;
         private Label label3;
         private Label label4;
         private Label label5;
-        private Button button2;
-        private Button button1;
-        private ListBox listBox2;
-        private ListBox listBox1;
+        private ListBox LectureDisplay;
         private Label label6;
-        private TextBox textBox1;
-        private ComboBox comboBox3;
-        private Label label7;
-        private TextBox textBox2;
+        private ComboBox CourseSubject;
         private Label label10;
-        private ComboBox comboBox5;
-        private ComboBox comboBox4;
-        private Label label9;
-        private Label label8;
         private RadioButton radioButton1;
-        private Button button3;
-        private Label label11;
         private RadioButton radioButton2;
         private Label label12;
         private RadioButton radioButton5;
@@ -594,5 +694,28 @@
         private RichTextBox richTextBox1;
         private Label label14;
         private Label label13;
+        private ComboBox CourseNumber;
+        private BindingSource comboBoxBindingSource1;
+        private BindingSource comboBoxBindingSource;
+        private BindingSource autoCompleteCustomSourceBindingSource;
+        private Label label2;
+        private RadioButton radioButton10;
+        private Label label7;
+        private Label label8;
+        private CheckedListBox DayCheckBox;
+        private ComboBox StartAM_PMCB;
+        private TextBox EndTimeMin;
+        private TextBox EndTimeHr;
+        private Label label11;
+        private TextBox StartTimeMin;
+        private Label label1;
+        private TextBox StartTimeHr;
+        private Label label9;
+        private ComboBox EndAM_PMCB;
+        private Label label15;
+        private TextBox InstructorTB;
+        private Button button1;
+        private TextBox ClassIDTB;
+        private Label label16;
     }
 }
