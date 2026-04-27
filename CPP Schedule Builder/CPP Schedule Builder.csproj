@@ -13,4 +13,10 @@
     <Folder Include="Assests\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\courses.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
