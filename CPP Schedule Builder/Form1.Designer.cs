@@ -31,6 +31,7 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             panel1 = new Panel();
+            button2 = new Button();
             button1 = new Button();
             ClassIDTB = new TextBox();
             label16 = new Label();
@@ -65,6 +66,7 @@
             label9 = new Label();
             comboBoxBindingSource1 = new BindingSource(components);
             panel2 = new Panel();
+            Label17 = new Label();
             dataGridView1 = new DataGridView();
             Sunday = new DataGridViewTextBoxColumn();
             Monday = new DataGridViewTextBoxColumn();
@@ -98,6 +100,7 @@
             // 
             panel1.BackColor = Color.FromArgb(255, 184, 28);
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(ClassIDTB);
             panel1.Controls.Add(label16);
@@ -135,6 +138,17 @@
             panel1.Size = new Size(482, 508);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
+            // 
+            // button2
+            // 
+            button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            button2.Location = new Point(383, 470);
+            button2.Name = "button2";
+            button2.Size = new Size(75, 23);
+            button2.TabIndex = 54;
+            button2.Text = "Schedule";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click_1;
             // 
             // button1
             // 
@@ -324,11 +338,12 @@
             radioButton5.AutoSize = true;
             radioButton5.Location = new Point(342, 408);
             radioButton5.Name = "radioButton5";
-            radioButton5.Size = new Size(120, 19);
+            radioButton5.Size = new Size(116, 19);
             radioButton5.TabIndex = 26;
             radioButton5.TabStop = true;
-            radioButton5.Text = "RateMyProffScore";
+            radioButton5.Text = "RateMyProfScore";
             radioButton5.UseVisualStyleBackColor = true;
+            radioButton5.CheckedChanged += radioButton5_CheckedChanged;
             // 
             // radioButton4
             // 
@@ -340,6 +355,7 @@
             radioButton4.TabStop = true;
             radioButton4.Text = "Afternoon";
             radioButton4.UseVisualStyleBackColor = true;
+            radioButton4.CheckedChanged += radioButton4_CheckedChanged;
             // 
             // radioButton3
             // 
@@ -351,6 +367,7 @@
             radioButton3.TabStop = true;
             radioButton3.Text = "Early Morning";
             radioButton3.UseVisualStyleBackColor = true;
+            radioButton3.CheckedChanged += radioButton3_CheckedChanged;
             // 
             // radioButton2
             // 
@@ -362,6 +379,7 @@
             radioButton2.TabStop = true;
             radioButton2.Text = "Min Commute";
             radioButton2.UseVisualStyleBackColor = true;
+            radioButton2.CheckedChanged += radioButton2_CheckedChanged;
             // 
             // label10
             // 
@@ -375,12 +393,12 @@
             // 
             // LectureDisplay
             // 
-            LectureDisplay.Font = new Font("Segoe UI", 10F);
+            LectureDisplay.Font = new Font("Segoe UI", 8F);
             LectureDisplay.FormattingEnabled = true;
-            LectureDisplay.ItemHeight = 17;
+            LectureDisplay.ItemHeight = 13;
             LectureDisplay.Location = new Point(8, 333);
             LectureDisplay.Name = "LectureDisplay";
-            LectureDisplay.Size = new Size(330, 157);
+            LectureDisplay.Size = new Size(330, 160);
             LectureDisplay.TabIndex = 10;
             LectureDisplay.SelectedIndexChanged += listBox1_SelectedIndexChanged;
             // 
@@ -467,6 +485,7 @@
             // 
             panel2.BackColor = Color.FromArgb(255, 184, 28);
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(Label17);
             panel2.Controls.Add(dataGridView1);
             panel2.Controls.Add(radioButton10);
             panel2.Location = new Point(500, 12);
@@ -475,14 +494,24 @@
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
             // 
+            // Label17
+            // 
+            Label17.AutoSize = true;
+            Label17.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            Label17.Location = new Point(8, 9);
+            Label17.Name = "Label17";
+            Label17.Size = new Size(143, 19);
+            Label17.TabIndex = 35;
+            Label17.Text = "Optimized Schedule";
+            // 
             // dataGridView1
             // 
             dataGridView1.BackgroundColor = Color.FromArgb(255, 255, 128);
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday });
-            dataGridView1.Location = new Point(8, 17);
+            dataGridView1.Location = new Point(8, 31);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(569, 196);
+            dataGridView1.Size = new Size(569, 355);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
@@ -567,8 +596,9 @@
             listBox3.ItemHeight = 15;
             listBox3.Location = new Point(3, 26);
             listBox3.Name = "listBox3";
-            listBox3.Size = new Size(159, 64);
+            listBox3.Size = new Size(274, 64);
             listBox3.TabIndex = 28;
+            listBox3.SelectedIndexChanged += listBox3_SelectedIndexChanged;
             // 
             // radioButton1
             // 
@@ -717,5 +747,7 @@
         private Button button1;
         private TextBox ClassIDTB;
         private Label label16;
+        private Button button2;
+        private Label Label17;
     }
 }

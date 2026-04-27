@@ -9,7 +9,8 @@ namespace CPP_Schedule_Builder
 
         private Dictionary<string, string[]> CoursesBySubject
         {
-            get{
+            get
+            {
                 coursesBySubject ??= LoadCoursesBySubject();
                 return coursesBySubject;
             }
@@ -48,6 +49,7 @@ namespace CPP_Schedule_Builder
             CourseNumber.DropDownStyle = ComboBoxStyle.DropDownList;
             CourseSubject.DropDownStyle = ComboBoxStyle.DropDownList;
             LectureDisplay.HorizontalScrollbar = true;
+            SetupScheduleGrid();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -95,7 +97,7 @@ namespace CPP_Schedule_Builder
 
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        private void richTextBox1_TextChanged(object sender, EventArgs e) //notifcations
         {
 
         }
@@ -245,6 +247,67 @@ namespace CPP_Schedule_Builder
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SetupScheduleGrid()
+        {
+            dataGridView1.Columns.Clear();
+            dataGridView1.Rows.Clear();
+
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.ReadOnly = true;
+            dataGridView1.RowHeadersVisible = false;
+
+            dataGridView1.Columns.Add("Time", "Time");
+            dataGridView1.Columns.Add("Sunday", "Sunday");
+            dataGridView1.Columns.Add("Monday", "Monday");
+            dataGridView1.Columns.Add("Tuesday", "Tuesday");
+            dataGridView1.Columns.Add("Wednesday", "Wednesday");
+            dataGridView1.Columns.Add("Thursday", "Thursday");
+            dataGridView1.Columns.Add("Friday", "Friday");
+            dataGridView1.Columns.Add("Saturday", "Saturday");
+
+            DateTime time = DateTime.Today.AddHours(7);
+            DateTime end = DateTime.Today.AddHours(24);
+
+            while (time <= end)
+            {
+                dataGridView1.Rows.Add(time.ToString("h:mm tt"));
+                time = time.AddMinutes(30);
+            }
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        private void listBox3_SelectedIndexChanged(object sender, EventArgs e)//scheduled class sections
+        {
+
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)//schedule button
+        {
+
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)//min commmute days optimization
+        {
+
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)// early morning classes perfered
+        {
+
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)// afternoon classes perfered
+        {
+
+        }
+
+        private void radioButton5_CheckedChanged(object sender, EventArgs e)//pick based off rate my profesor api
         {
 
         }
