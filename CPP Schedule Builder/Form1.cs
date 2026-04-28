@@ -5,7 +5,18 @@ namespace CPP_Schedule_Builder
     public partial class Form1 : Form
     {
         private const string CourseDataFileName = "courses.json";
+        private static readonly Color[] ScheduleColors =
+        {
+            Color.FromArgb(0, 80, 48),
+            Color.FromArgb(0, 122, 204),
+            Color.FromArgb(117, 63, 152),
+            Color.FromArgb(180, 83, 9),
+            Color.FromArgb(146, 64, 14),
+            Color.FromArgb(15, 118, 110)
+        };
+
         private Dictionary<string, string[]>? coursesBySubject;
+        private readonly RateMyProfessorClient rateMyProfessorClient = new();
 
         private Dictionary<string, string[]> CoursesBySubject
         {
@@ -50,6 +61,7 @@ namespace CPP_Schedule_Builder
             CourseSubject.DropDownStyle = ComboBoxStyle.DropDownList;
             LectureDisplay.HorizontalScrollbar = true;
             SetupScheduleGrid();
+            radioButton2.Checked = true;
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -167,34 +179,43 @@ namespace CPP_Schedule_Builder
                 return;
             }
 
-            string classId = ClassIDTB.Text.Trim();
+            string classIdText = ClassIDTB.Text.Trim();
             string professor = InstructorTB.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(classId) || string.IsNullOrWhiteSpace(professor))
+            if (!int.TryParse(classIdText, out int classId) || string.IsNullOrWhiteSpace(professor))
             {
-                MessageBox.Show("Please enter the class ID and professor name.", "Missing Class Details", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please enter a numeric class ID and professor name.", "Missing Class Details", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            string days = string.Join(", ", DayCheckBox.CheckedItems.Cast<string>());
+            List<DayOfWeek> days = DayCheckBox.CheckedItems
+                .Cast<string>()
+                .Select(day => Enum.Parse<DayOfWeek>(day))
+                .ToList();
 
-            if (string.IsNullOrWhiteSpace(days))
+            if (days.Count == 0)
             {
                 MessageBox.Show("Please select at least one class day.", "Missing Days", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (!TryFormatTime(StartTimeHr.Text, StartTimeMin.Text, StartAM_PMCB.SelectedItem, out string startTime) ||
-                !TryFormatTime(EndTimeHr.Text, EndTimeMin.Text, EndAM_PMCB.SelectedItem, out string endTime))
+            if (!TryReadTime(StartTimeHr.Text, StartTimeMin.Text, StartAM_PMCB.SelectedItem, out TimeSpan start, out string startAM_PM) ||
+                !TryReadTime(EndTimeHr.Text, EndTimeMin.Text, EndAM_PMCB.SelectedItem, out TimeSpan end, out string endAM_PM))
             {
                 MessageBox.Show("Please enter valid start and end times.", "Invalid Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            if (ToTimeOfDay(end, endAM_PM) <= ToTimeOfDay(start, startAM_PM))
+            {
+                MessageBox.Show("Please make sure the end time is after the start time.", "Invalid Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             SplitCourse(selectedCourse, out string courseNumber, out string courseName);
 
-            string displayText = $"ID: {classId} | {subject} {courseNumber} - {courseName} | {days} {startTime} - {endTime} | Professor: {professor}";
-            LectureDisplay.Items.Add(displayText);
+            Lecture lecture = new Lecture(classId, subject, courseName, courseNumber, professor, days, start, startAM_PM, end, endAM_PM);
+            LectureDisplay.Items.Add(lecture);
         }
 
         private static void SplitCourse(string selectedCourse, out string courseNumber, out string courseName)
@@ -212,13 +233,14 @@ namespace CPP_Schedule_Builder
             courseName = selectedCourse[(separatorIndex + 3)..].Trim();
         }
 
-        private static bool TryFormatTime(string hourText, string minuteText, object? amPmSelection, out string formattedTime)
+        private static bool TryReadTime(string hourText, string minuteText, object? amPmSelection, out TimeSpan time, out string amPm)
         {
-            formattedTime = string.Empty;
+            time = TimeSpan.Zero;
+            amPm = string.Empty;
 
             if (!int.TryParse(hourText.Trim(), out int hour) ||
                 !int.TryParse(minuteText.Trim(), out int minute) ||
-                amPmSelection is not string amPm ||
+                amPmSelection is not string selectedAmPm ||
                 hour < 1 ||
                 hour > 12 ||
                 minute < 0 ||
@@ -227,8 +249,25 @@ namespace CPP_Schedule_Builder
                 return false;
             }
 
-            formattedTime = $"{hour}:{minute:00} {amPm}";
+            time = new TimeSpan(hour, minute, 0);
+            amPm = selectedAmPm;
             return true;
+        }
+
+        private static TimeSpan ToTimeOfDay(TimeSpan time, string amPm)
+        {
+            int hour = time.Hours;
+
+            if (string.Equals(amPm, "PM", StringComparison.OrdinalIgnoreCase) && hour != 12)
+            {
+                hour += 12;
+            }
+            else if (string.Equals(amPm, "AM", StringComparison.OrdinalIgnoreCase) && hour == 12)
+            {
+                hour = 0;
+            }
+
+            return new TimeSpan(hour, time.Minutes, 0);
         }
 
         private void textBox6_TextChanged(object sender, EventArgs e)
@@ -260,6 +299,7 @@ namespace CPP_Schedule_Builder
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersVisible = false;
+            dataGridView1.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
             dataGridView1.Columns.Add("Time", "Time");
             dataGridView1.Columns.Add("Sunday", "Sunday");
@@ -270,16 +310,131 @@ namespace CPP_Schedule_Builder
             dataGridView1.Columns.Add("Friday", "Friday");
             dataGridView1.Columns.Add("Saturday", "Saturday");
 
-            DateTime time = DateTime.Today.AddHours(7);
-            DateTime end = DateTime.Today.AddHours(24);
+            TimeSpan time = TimeSpan.FromHours(7);
+            TimeSpan end = TimeSpan.FromHours(24);
 
             while (time <= end)
             {
-                dataGridView1.Rows.Add(time.ToString("h:mm tt"));
-                time = time.AddMinutes(30);
+                int rowIndex = dataGridView1.Rows.Add(DateTime.Today.Add(time).ToString("h:mm tt"));
+                dataGridView1.Rows[rowIndex].Tag = time;
+                dataGridView1.Rows[rowIndex].Height = 28;
+                time = time.Add(TimeSpan.FromMinutes(30));
             }
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        private void ClearScheduleGrid()
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                for (int columnIndex = 1; columnIndex < dataGridView1.Columns.Count; columnIndex++)
+                {
+                    DataGridViewCell cell = row.Cells[columnIndex];
+                    cell.Value = null;
+                    cell.Style.BackColor = Color.Empty;
+                    cell.Style.ForeColor = Color.Empty;
+                    cell.Style.SelectionBackColor = Color.Empty;
+                    cell.Style.SelectionForeColor = Color.Empty;
+                }
+            }
+        }
+
+        private void ShowScheduleResult(ScheduleOptimizationResult result, IScheduleOptimizer optimizer, int totalCourseCount)
+        {
+            listBox3.Items.Clear();
+            ClearScheduleGrid();
+
+            foreach (Lecture lecture in result.SelectedLectures)
+            {
+                listBox3.Items.Add(lecture);
+            }
+
+            List<string> gridErrors = MarkScheduleGrid(result.SelectedLectures);
+            List<string> errors = result.Errors.Concat(gridErrors).ToList();
+
+            if (errors.Count == 0)
+            {
+                AppendNotification($"Success: scheduled all {totalCourseCount} class(es) using {optimizer.Name}.");
+                return;
+            }
+
+            AppendNotification($"Scheduled {result.SelectedLectures.Count} of {totalCourseCount} class(es) using {optimizer.Name}.");
+
+            foreach (string error in errors)
+            {
+                AppendNotification($"Error: {error}");
+            }
+        }
+
+        private List<string> MarkScheduleGrid(IReadOnlyList<Lecture> lectures)
+        {
+            List<string> errors = new();
+
+            for (int lectureIndex = 0; lectureIndex < lectures.Count; lectureIndex++)
+            {
+                Lecture lecture = lectures[lectureIndex];
+                Color scheduleColor = ScheduleColors[lectureIndex % ScheduleColors.Length];
+                string cellText = $"{lecture.Subject} {lecture.ClassCode}{Environment.NewLine}ID {lecture.ClassID}";
+                TimeSpan start = ToTimeOfDay(lecture.StartTime, lecture.StartAM_PM);
+                TimeSpan end = ToTimeOfDay(lecture.EndTime, lecture.EndAM_PM);
+
+                foreach (DayOfWeek day in lecture.Days)
+                {
+                    int columnIndex = GetDayColumnIndex(day);
+                    int markedRows = 0;
+
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        if (row.Tag is not TimeSpan slotStart)
+                        {
+                            continue;
+                        }
+
+                        TimeSpan slotEnd = slotStart.Add(TimeSpan.FromMinutes(30));
+
+                        if (slotStart >= end || start >= slotEnd)
+                        {
+                            continue;
+                        }
+
+                        DataGridViewCell cell = row.Cells[columnIndex];
+                        cell.Value = cellText;
+                        cell.Style.BackColor = scheduleColor;
+                        cell.Style.ForeColor = Color.White;
+                        cell.Style.SelectionBackColor = scheduleColor;
+                        cell.Style.SelectionForeColor = Color.White;
+                        markedRows++;
+                    }
+
+                    if (markedRows == 0)
+                    {
+                        errors.Add($"Could not mark {GetCourseKey(lecture)} on {day}; its time is outside the grid.");
+                    }
+                }
+            }
+
+            return errors;
+        }
+
+        private static int GetDayColumnIndex(DayOfWeek day)
+        {
+            return (int)day + 1;
+        }
+
+        private static string GetCourseKey(Lecture lecture)
+        {
+            return $"{lecture.Subject} {lecture.ClassCode}".Trim();
+        }
+
+        private void AppendNotification(string message)
+        {
+            if (richTextBox1.TextLength > 0)
+            {
+                richTextBox1.AppendText(Environment.NewLine);
+            }
+
+            richTextBox1.AppendText(message);
         }
 
         private void listBox3_SelectedIndexChanged(object sender, EventArgs e)//scheduled class sections
@@ -287,9 +442,99 @@ namespace CPP_Schedule_Builder
 
         }
 
-        private void button2_Click_1(object sender, EventArgs e)//schedule button
+        private async void button2_Click_1(object sender, EventArgs e)//schedule button
         {
+            List<Lecture> candidates = LectureDisplay.Items.OfType<Lecture>().ToList();
 
+            richTextBox1.Clear();
+
+            if (candidates.Count == 0)
+            {
+                richTextBox1.Text = "Error: Add at least one class section before building a schedule.";
+                return;
+            }
+
+            IScheduleOptimizer? optimizer = GetSelectedOptimizer();
+
+            if (optimizer == null)
+            {
+                richTextBox1.Text = "Error: Select an optimization option before building a schedule.";
+                return;
+            }
+
+            int totalCourseCount = candidates
+                .GroupBy(GetCourseKey)
+                .Count();
+
+            button2.Enabled = false;
+
+            try
+            {
+                if (optimizer is RateMyProfessorOptimizer)
+                {
+                    await LoadRateMyProfessorScoresAsync(candidates);
+                }
+
+                ScheduleOptimizationResult result = optimizer.Optimize(candidates);
+                ShowScheduleResult(result, optimizer, totalCourseCount);
+            }
+            finally
+            {
+                button2.Enabled = true;
+            }
+        }
+
+        private async Task LoadRateMyProfessorScoresAsync(List<Lecture> lectures)
+        {
+            AppendNotification("Loading Rate My Professor scores...");
+
+            foreach (Lecture lecture in lectures)
+            {
+                RateMyProfessorRating? rating = await rateMyProfessorClient.GetProfessorRatingAsync(lecture.Instructor);
+
+                lecture.RateMyProfessorScore = rating?.Score;
+                lecture.RateMyProfessorRatingsCount = rating?.RatingsCount;
+                lecture.RateMyProfessorMatchedName = rating?.Name;
+                lecture.RateMyProfessorProfileUrl = rating?.ProfileUrl;
+            }
+
+            foreach (Lecture lecture in lectures.DistinctBy(lecture => lecture.Instructor))
+            {
+                if (lecture.RateMyProfessorScore.HasValue)
+                {
+                    AppendNotification(
+                        $"Matched {lecture.Instructor} to {lecture.RateMyProfessorMatchedName}: {lecture.RateMyProfessorScore:0.0}/5 from {lecture.RateMyProfessorRatingsCount ?? 0} rating(s).");
+                }
+                else
+                {
+                    AppendNotification($"Error: No Rate My Professor score found for {lecture.Instructor}.");
+                }
+            }
+        }
+
+        private IScheduleOptimizer? GetSelectedOptimizer()
+        {
+            if (radioButton2.Checked)
+            {
+                return new MinCommuteDaysOptimizer();
+            }
+
+            if (radioButton3.Checked)
+            {
+                return new EarlyMorningOptimizer();
+            }
+
+            if (radioButton4.Checked)
+            {
+                return new AfternoonOptimizer();
+            }
+
+            if (radioButton5.Checked)
+            {
+                return new RateMyProfessorOptimizer();
+            }
+
+            return null;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)//min commmute days optimization

@@ -20,6 +20,11 @@ namespace CPP_Schedule_Builder
         public string EndAM_PM { get; set; }
         public TimeSpan EndTime { get; set; }
         public string Color { get; set; }
+        public double? RateMyProfessorScore { get; set; }
+        public int? RateMyProfessorRatingsCount { get; set; }
+        public string? RateMyProfessorMatchedName { get; set; }
+        public string? RateMyProfessorProfileUrl { get; set; }
+
         public Lecture(int classID, string subject, string className, string classCode, string instructor, List<DayOfWeek> days, TimeSpan startTime, string startAM_PM, TimeSpan endTime, string endAM_PM)
         {
             ClassID = classID;
@@ -32,27 +37,14 @@ namespace CPP_Schedule_Builder
             StartAM_PM = startAM_PM;
             EndTime = endTime;
             EndAM_PM = endAM_PM;
+            Color = string.Empty;
         }
 
         private string FormatDays()
         {
             if (Days == null || Days.Count == 0) return "";
 
-            var names = new List<string>();
-            foreach (var d in Days)
-            {
-                switch (d)
-                {
-                    case DayOfWeek.Monday: names.Add("Mon"); break;
-                    case DayOfWeek.Tuesday: names.Add("Tue"); break;
-                    case DayOfWeek.Wednesday: names.Add("Wed"); break;
-                    case DayOfWeek.Thursday: names.Add("Thu"); break;
-                    case DayOfWeek.Friday: names.Add("Fri"); break;
-                    case DayOfWeek.Saturday: names.Add("Sat"); break;
-                    case DayOfWeek.Sunday: names.Add("Sun"); break;
-                }
-            }
-            return string.Join("/", names);
+            return string.Join(", ", Days);
         }
 
         private string FormatTime(TimeSpan t, string ampm)
@@ -65,14 +57,13 @@ namespace CPP_Schedule_Builder
 
         public override string ToString()
         {
-            string idPart = ClassID.ToString();
-            string subjPart = string.IsNullOrWhiteSpace(Subject) ? "" : Subject + " ";
-            string codePart = ClassCode.ToString();
             string daysPart = FormatDays();
             string timePart = FormatTime(StartTime, StartAM_PM) + " - " + FormatTime(EndTime, EndAM_PM);
-            string instrPart = string.IsNullOrWhiteSpace(Instructor) ? "" : Instructor;
+            string rmpPart = RateMyProfessorScore.HasValue
+                ? $" | RMP: {RateMyProfessorScore.Value:0.0}/5 ({RateMyProfessorRatingsCount ?? 0} ratings)"
+                : "";
 
-            return $"{idPart} - {subjPart}{codePart} | {daysPart} {timePart} | {instrPart}".Trim();
+            return $"ID: {ClassID} | {Subject} {ClassCode} - {ClassName} | {daysPart} {timePart} | Professor: {Instructor}{rmpPart}";
         }
     }
 
