@@ -4653,7 +4653,7 @@ namespace CPP_Schedule_Builder
 
             string input = CourseNumber.SelectedItem.ToString();
             string[] parts = input.Split('-');
-            int code = int.Parse(parts[0].Trim());
+            string code = parts[0].Trim();
             string name = parts[1].Trim();
 
             var days = new List<DayOfWeek>();
@@ -4700,6 +4700,15 @@ namespace CPP_Schedule_Builder
             {
                 richTextBox1.Text = "This class conflicts with an existing class in the schedule.";
             }
+            ClassIDTB.Clear();
+            InstructorTB.Clear();
+            StartTimeHr.Clear();
+            StartTimeMin.Clear();
+            EndTimeHr.Clear();
+            EndTimeMin.Clear();
+            StartAM_PMCB.SelectedIndex = -1;
+            EndAM_PMCB.SelectedIndex = -1;
+            DayCheckBox.ClearSelected();
         }
 
         private void textBox6_TextChanged(object sender, EventArgs e)

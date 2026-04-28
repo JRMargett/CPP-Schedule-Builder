@@ -11,7 +11,7 @@ namespace CPP_Schedule_Builder
     {
         public int ClassID {get; set;}
         public string ClassName {get; set; }
-        public int ClassCode {get; set; }
+        public string ClassCode {get; set; }
         public string Instructor { get; set; }
         public List<DayOfWeek> Days { get; set; }
         public TimeSpan StartTime { get; set; }
@@ -19,7 +19,7 @@ namespace CPP_Schedule_Builder
         public string EndAM_PM { get; set; }
         public TimeSpan EndTime { get; set; }
         public string Color { get; set; }
-        public Lecture(int classID, string className, int classCode, string instructor, List<DayOfWeek> days, TimeSpan startTime, string startAM_PM, TimeSpan endTime, string endAM_PM)
+        public Lecture(int classID, string className, string classCode, string instructor, List<DayOfWeek> days, TimeSpan startTime, string startAM_PM, TimeSpan endTime, string endAM_PM)
             {
                 ClassID = classID;
                 ClassName = className;
