@@ -2,6 +2,8 @@ namespace CPP_Schedule_Builder
 {
     public partial class Form1 : Form
     {
+        private Schedule studentSchedule = new Schedule();
+        
         public Form1()
         {
             InitializeComponent();
@@ -4626,22 +4628,78 @@ namespace CPP_Schedule_Builder
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+            if (CourseNumber.SelectedItem == null)
+            {
+                richTextBox1.Text = "Please select a course number.";
+                return;
+            }
+
+            if (StartAM_PMCB.SelectedItem == null || EndAM_PMCB.SelectedItem == null)
+            {
+                richTextBox1.Text = "Please select AM or PM for both start and end times.";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(ClassIDTB.Text) ||
+                string.IsNullOrWhiteSpace(InstructorTB.Text) ||
+                string.IsNullOrWhiteSpace(StartTimeHr.Text) ||
+                string.IsNullOrWhiteSpace(StartTimeMin.Text) ||
+                string.IsNullOrWhiteSpace(EndTimeHr.Text) ||
+                string.IsNullOrWhiteSpace(EndTimeMin.Text))
+            {
+                richTextBox1.Text = "Please fill in all required fields.";
+                return;
+            }
+
             string input = CourseNumber.SelectedItem.ToString();
             string[] parts = input.Split('-');
             int code = int.Parse(parts[0].Trim());
             string name = parts[1].Trim();
+
             var days = new List<DayOfWeek>();
-            if (DayCheckBox.GetItemChecked(0) == true) days.Add(DayOfWeek.Monday);
-            if (DayCheckBox.GetItemChecked(1) == true) days.Add(DayOfWeek.Tuesday);
-            if (DayCheckBox.GetItemChecked(2) == true) days.Add(DayOfWeek.Wednesday);
-            if (DayCheckBox.GetItemChecked(3) == true) days.Add(DayOfWeek.Thursday);
-            if (DayCheckBox.GetItemChecked(4) == true) days.Add(DayOfWeek.Friday);
+            if (DayCheckBox.GetItemChecked(0)) days.Add(DayOfWeek.Monday);
+            if (DayCheckBox.GetItemChecked(1)) days.Add(DayOfWeek.Tuesday);
+            if (DayCheckBox.GetItemChecked(2)) days.Add(DayOfWeek.Wednesday);
+            if (DayCheckBox.GetItemChecked(3)) days.Add(DayOfWeek.Thursday);
+            if (DayCheckBox.GetItemChecked(4)) days.Add(DayOfWeek.Friday);
+
+            if (days.Count == 0)
+            {
+                richTextBox1.Text = "Please select at least one day.";
+                return;
+            }
+
             TimeSpan start = new TimeSpan(int.Parse(StartTimeHr.Text), int.Parse(StartTimeMin.Text), 0);
             TimeSpan end = new TimeSpan(int.Parse(EndTimeHr.Text), int.Parse(EndTimeMin.Text), 0);
+
             string startAM_PM = StartAM_PMCB.SelectedItem.ToString();
             string endAM_PM = EndAM_PMCB.SelectedItem.ToString();
-            Lecture lecture = new Lecture(int.Parse(ClassIDTB.Text), name, code, InstructorTB.Text, days, start, startAM_PM, end, endAM_PM);
-            LectureDisplay.Items.Add(lecture);  
+
+            Lecture lecture = new Lecture(
+                int.Parse(ClassIDTB.Text),
+                name,
+                code,
+                InstructorTB.Text,
+                days,
+                start,
+                startAM_PM,
+                end,
+                endAM_PM
+            );
+
+            if (studentSchedule.AddLecture(lecture))
+            {
+                LectureDisplay.Items.Add(
+                    $"{lecture.ClassCode} - {lecture.ClassName} | {lecture.Instructor}"
+                );
+
+                ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
+                richTextBox1.Text = "Class added successfully.";
+            }
+            else
+            {
+                richTextBox1.Text = "This class conflicts with an existing class in the schedule.";
+            }
         }
 
         private void textBox6_TextChanged(object sender, EventArgs e)
