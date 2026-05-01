@@ -8,17 +8,14 @@ namespace CPP_Schedule_Builder
     internal class Schedule
     {
         private readonly List<Lecture> lectures = new List<Lecture>();
-
+        private readonly List<Lecture> scheduleLectures = new List<Lecture>();
         public IReadOnlyList<Lecture> Lectures => lectures.AsReadOnly();
+        public IReadOnlyList<Lecture> ScheduleLectures=> scheduleLectures.AsReadOnly();    
 
         public bool AddLecture(Lecture lecture)
         {
             if (lecture == null)
                 return false;
-
-            if (HasConflict(lecture))
-                return false;
-
             lectures.Add(lecture);
             return true;
         }
@@ -34,14 +31,18 @@ namespace CPP_Schedule_Builder
             return true;
         }
 
+
         public bool HasConflict(Lecture newLecture)
         {
-            foreach (Lecture existingLecture in lectures)
+            foreach (Lecture existingLecture in scheduleLectures)
             {
+                if (existingLecture == newLecture)
+                    continue;
                 if (AreConflicting(existingLecture, newLecture))
+                        return true;
+                if (existingLecture.ClassCode == newLecture.ClassCode)
                     return true;
             }
-
             return false;
         }
 
@@ -126,5 +127,19 @@ namespace CPP_Schedule_Builder
         {
             return $"{time.Hours:D2}:{time.Minutes:D2} {amPm}";
         }
+        public bool TryBuildSchedule()
+        {
+            scheduleLectures.Clear();
+            foreach (Lecture lecture in lectures)
+            {
+                if (!HasConflict(lecture))
+                {
+                    scheduleLectures.Add(lecture);
+                }
+            }
+
+            return scheduleLectures.Count > 0;
+        }
+
     }
 }

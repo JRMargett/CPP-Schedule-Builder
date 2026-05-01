@@ -22,7 +22,7 @@ namespace CPP_Schedule_Builder
 
             grid.Rows.Clear();
 
-            int maxRows = Math.Max(schedule.Lectures.Count, 1);
+            int maxRows = Math.Max(schedule.ScheduleLectures.Count, 1);
             for (int i = 0; i < maxRows; i++)
             {
                 grid.Rows.Add();
@@ -43,7 +43,7 @@ namespace CPP_Schedule_Builder
             {
                 DayOfWeek currentDay = dayOrder[col];
 
-                var dayLectures = schedule.Lectures
+                var dayLectures = schedule.ScheduleLectures
                     .Where(l => l.Days.Contains(currentDay))
                     .OrderBy(l => schedule.ConvertTo24Hour(l.StartTime, l.StartAM_PM))
                     .ToList();

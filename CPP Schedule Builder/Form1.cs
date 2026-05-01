@@ -1,9 +1,10 @@
+using System.Drawing.Text;
+
 namespace CPP_Schedule_Builder
 {
     public partial class Form1 : Form
     {
         private Schedule studentSchedule = new Schedule();
-        
         public Form1()
         {
             InitializeComponent();
@@ -4687,19 +4688,12 @@ namespace CPP_Schedule_Builder
                 endAM_PM
             );
 
-            if (studentSchedule.AddLecture(lecture))
-            {
-                LectureDisplay.Items.Add(
-                    $"{lecture.ClassCode} - {lecture.ClassName} | {lecture.Instructor}"
-                );
 
-                ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
-                richTextBox1.Text = "Class added successfully.";
-            }
-            else
-            {
-                richTextBox1.Text = "This class conflicts with an existing class in the schedule.";
-            }
+            LectureDisplay.Items.Add(
+                $"{lecture.ClassCode} - {lecture.ClassName} | {lecture.Instructor}"
+            );
+            studentSchedule.AddLecture(lecture);
+
             ClassIDTB.Clear();
             InstructorTB.Clear();
             StartTimeHr.Clear();
@@ -4730,5 +4724,21 @@ namespace CPP_Schedule_Builder
         {
 
         }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
+            if (studentSchedule.TryBuildSchedule())
+            {
+                ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
+                richTextBox1.Text = "Schedule created successfully.";
+            }
+            else
+            {
+                richTextBox1.Text = "No valid schedule could be built.";
+            }
+
+        }
     }
 }
+
