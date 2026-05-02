@@ -69,7 +69,7 @@ namespace CPP_Schedule_Builder
             grid.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
         }
 
-        private static string FormatTime(TimeSpan time, string amPm)
+        public static string FormatTime(TimeSpan time, string amPm)
         {
             return $"{time.Hours:D2}:{time.Minutes:D2} {amPm}";
         }

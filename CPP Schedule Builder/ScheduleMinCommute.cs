@@ -6,45 +6,50 @@ using System.Threading.Tasks;
 
 namespace CPP_Schedule_Builder
 {
-    internal class TrafficWindow
+    internal class ScheduleMinCommute : Schedule
     {
-        public string Label { get; set; }
-        public TimeSpan Start { get; set; }
-        public TimeSpan End { get; set; }
-        public TrafficWindow(string label, string start, string end)
+        private List<Lecture> BuildMinCommuteSchedule()
         {
-            Label = label;
-            Start = TimeSpan.Parse(start);
-            End = TimeSpan.Parse(end);
-        }
-        public bool Contains(TimeSpan time) => time >= Start && time <= End;
-    }
-    internal class ScheduleMinCommute:Schedule
-    {
-        private static readonly List<TrafficWindow> TrafficWindows = new List<TrafficWindow>
-        {
-            new TrafficWindow("Morning Rush Hour", "07:00", "09:00"),
-            new TrafficWindow("Evening Rush Hour", "16:00", "18:00")
-        };
-
-        private const int Buffer = 30;
-        public static bool CheckTraffic(string startTimeStr, string endTimeStr)
-        {
-            var startTime = TimeSpan.Parse(startTimeStr);
-            var endTime = TimeSpan.Parse(endTimeStr);
-            foreach (var window in TrafficWindows)
+            TimeSpan MorningTrafficStart = new TimeSpan(7, 0, 0);
+            TimeSpan MorningTrafficEnd = new TimeSpan(9, 0, 0);
+            TimeSpan EveningTrafficStart = new TimeSpan(16, 0, 0);
+            TimeSpan EveningTrafficEnd = new TimeSpan(18, 0, 0);
+            List<(Lecture lecture, int score)> scoredLectures = new List<(Lecture, int)>();
+            foreach (Lecture lecture in Lectures)
             {
-                if (window.Contains(endTime) || window.Contains(startTime))
+                TimeSpan start = ConvertTo24Hour(lecture.StartTime, lecture.StartAM_PM);
+                TimeSpan end = ConvertTo24Hour(lecture.EndTime, lecture.EndAM_PM);
+                int score = 0;
+                if ((start >= MorningTrafficStart && start < MorningTrafficEnd) || (end > MorningTrafficStart && end <= MorningTrafficEnd))
                 {
-                    return true;
+                    score += 2; // High traffic during morning rush hour
                 }
-                var bufferEdge = window.Start - TimeSpan.FromMinutes(Buffer);
-                var bufferEdge2 = window.End + TimeSpan.FromMinutes(Buffer);
-                if ((endTime >= bufferEdge && endTime < window.Start) || (startTime >= bufferEdge2 && startTime < window.Start))
-                    return true;
+                if ((start >= EveningTrafficStart && start < EveningTrafficEnd) || (end > EveningTrafficStart && end <= EveningTrafficEnd))
+                {
+                    score += 2; // High traffic during evening rush hour
+                }
+                scoredLectures.Add((lecture, score));
             }
-            return false;
-        }
+            scoredLectures = scoredLectures.OrderBy(x => x.score).ToList();
 
+            List<Lecture> minCommuteSchedule = new List<Lecture>();
+            foreach ((Lecture lecture, int score) in scoredLectures)
+            {
+                bool hasConflict = false;
+                foreach (Lecture added in minCommuteSchedule)
+                {
+                    if (AreConflicting(lecture, added) || lecture.ClassCode == added.ClassCode)
+                    {
+                        hasConflict = true;
+                        break;
+                    }
+                }
+                if (!hasConflict)
+                {
+                    minCommuteSchedule.Add(lecture);
+                }
+            }
+            return minCommuteSchedule;
+        }
     }
 }

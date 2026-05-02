@@ -31,6 +31,14 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             panel1 = new Panel();
+            groupBox1 = new GroupBox();
+            MinCommuteRB = new RadioButton();
+            NoOptRB = new RadioButton();
+            EarlyMorningRB = new RadioButton();
+            AfternoonRB = new RadioButton();
+            RateMyRB = new RadioButton();
+            button4 = new Button();
+            button3 = new Button();
             button2 = new Button();
             button1 = new Button();
             ClassIDTB = new TextBox();
@@ -51,10 +59,6 @@
             label2 = new Label();
             CourseNumber = new ComboBox();
             label12 = new Label();
-            radioButton5 = new RadioButton();
-            radioButton4 = new RadioButton();
-            radioButton3 = new RadioButton();
-            radioButton2 = new RadioButton();
             label10 = new Label();
             LectureDisplay = new ListBox();
             label6 = new Label();
@@ -86,6 +90,7 @@
             comboBoxBindingSource = new BindingSource(components);
             autoCompleteCustomSourceBindingSource = new BindingSource(components);
             panel1.SuspendLayout();
+            groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource1).BeginInit();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -99,6 +104,9 @@
             // 
             panel1.BackColor = Color.FromArgb(255, 184, 28);
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(groupBox1);
+            panel1.Controls.Add(button4);
+            panel1.Controls.Add(button3);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(ClassIDTB);
@@ -119,10 +127,6 @@
             panel1.Controls.Add(label2);
             panel1.Controls.Add(CourseNumber);
             panel1.Controls.Add(label12);
-            panel1.Controls.Add(radioButton5);
-            panel1.Controls.Add(radioButton4);
-            panel1.Controls.Add(radioButton3);
-            panel1.Controls.Add(radioButton2);
             panel1.Controls.Add(label10);
             panel1.Controls.Add(LectureDisplay);
             panel1.Controls.Add(label6);
@@ -137,6 +141,98 @@
             panel1.Size = new Size(482, 508);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(MinCommuteRB);
+            groupBox1.Controls.Add(NoOptRB);
+            groupBox1.Controls.Add(EarlyMorningRB);
+            groupBox1.Controls.Add(AfternoonRB);
+            groupBox1.Controls.Add(RateMyRB);
+            groupBox1.Location = new Point(341, 316);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(134, 130);
+            groupBox1.TabIndex = 35;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Optimization";
+            // 
+            // MinCommuteRB
+            // 
+            MinCommuteRB.AutoSize = true;
+            MinCommuteRB.Location = new Point(6, 39);
+            MinCommuteRB.Name = "MinCommuteRB";
+            MinCommuteRB.Size = new Size(103, 19);
+            MinCommuteRB.TabIndex = 23;
+            MinCommuteRB.TabStop = true;
+            MinCommuteRB.Text = "Min Commute";
+            MinCommuteRB.UseVisualStyleBackColor = true;
+            MinCommuteRB.CheckedChanged += radioButton2_CheckedChanged;
+            // 
+            // NoOptRB
+            // 
+            NoOptRB.AutoSize = true;
+            NoOptRB.Location = new Point(6, 94);
+            NoOptRB.Name = "NoOptRB";
+            NoOptRB.Size = new Size(113, 19);
+            NoOptRB.TabIndex = 35;
+            NoOptRB.TabStop = true;
+            NoOptRB.Text = "No Optimization";
+            NoOptRB.UseVisualStyleBackColor = true;
+            NoOptRB.CheckedChanged += radioButton7_CheckedChanged;
+            // 
+            // EarlyMorningRB
+            // 
+            EarlyMorningRB.AutoSize = true;
+            EarlyMorningRB.Location = new Point(6, 22);
+            EarlyMorningRB.Name = "EarlyMorningRB";
+            EarlyMorningRB.Size = new Size(99, 19);
+            EarlyMorningRB.TabIndex = 24;
+            EarlyMorningRB.TabStop = true;
+            EarlyMorningRB.Text = "Early Morning";
+            EarlyMorningRB.UseVisualStyleBackColor = true;
+            EarlyMorningRB.CheckedChanged += radioButton3_CheckedChanged;
+            // 
+            // AfternoonRB
+            // 
+            AfternoonRB.AutoSize = true;
+            AfternoonRB.Location = new Point(6, 56);
+            AfternoonRB.Name = "AfternoonRB";
+            AfternoonRB.Size = new Size(79, 19);
+            AfternoonRB.TabIndex = 25;
+            AfternoonRB.TabStop = true;
+            AfternoonRB.Text = "Afternoon";
+            AfternoonRB.UseVisualStyleBackColor = true;
+            // 
+            // RateMyRB
+            // 
+            RateMyRB.AutoSize = true;
+            RateMyRB.Location = new Point(6, 73);
+            RateMyRB.Name = "RateMyRB";
+            RateMyRB.Size = new Size(120, 19);
+            RateMyRB.TabIndex = 26;
+            RateMyRB.TabStop = true;
+            RateMyRB.Text = "RateMyProffScore";
+            RateMyRB.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(400, 101);
+            button4.Name = "button4";
+            button4.Size = new Size(75, 23);
+            button4.TabIndex = 56;
+            button4.Text = "Export";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(400, 77);
+            button3.Name = "button3";
+            button3.Size = new Size(75, 23);
+            button3.TabIndex = 55;
+            button3.Text = "Import";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // button2
             // 
@@ -327,53 +423,8 @@
             label12.AutoSize = true;
             label12.Location = new Point(342, 315);
             label12.Name = "label12";
-            label12.Size = new Size(76, 15);
+            label12.Size = new Size(0, 15);
             label12.TabIndex = 27;
-            label12.Text = "Optimization";
-            // 
-            // radioButton5
-            // 
-            radioButton5.AutoSize = true;
-            radioButton5.Location = new Point(342, 408);
-            radioButton5.Name = "radioButton5";
-            radioButton5.Size = new Size(120, 19);
-            radioButton5.TabIndex = 26;
-            radioButton5.TabStop = true;
-            radioButton5.Text = "RateMyProffScore";
-            radioButton5.UseVisualStyleBackColor = true;
-            // 
-            // radioButton4
-            // 
-            radioButton4.AutoSize = true;
-            radioButton4.Location = new Point(342, 383);
-            radioButton4.Name = "radioButton4";
-            radioButton4.Size = new Size(79, 19);
-            radioButton4.TabIndex = 25;
-            radioButton4.TabStop = true;
-            radioButton4.Text = "Afternoon";
-            radioButton4.UseVisualStyleBackColor = true;
-            // 
-            // radioButton3
-            // 
-            radioButton3.AutoSize = true;
-            radioButton3.Location = new Point(342, 358);
-            radioButton3.Name = "radioButton3";
-            radioButton3.Size = new Size(99, 19);
-            radioButton3.TabIndex = 24;
-            radioButton3.TabStop = true;
-            radioButton3.Text = "Early Morning";
-            radioButton3.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2
-            // 
-            radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(342, 333);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(103, 19);
-            radioButton2.TabIndex = 23;
-            radioButton2.TabStop = true;
-            radioButton2.Text = "Min Commute";
-            radioButton2.UseVisualStyleBackColor = true;
             // 
             // label10
             // 
@@ -660,6 +711,8 @@
             Load += Form1_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource1).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
@@ -695,11 +748,11 @@
         private ComboBox CourseSubject;
         private Label label10;
         private RadioButton radioButton1;
-        private RadioButton radioButton2;
+        private RadioButton MinCommuteRB;
         private Label label12;
-        private RadioButton radioButton5;
-        private RadioButton radioButton4;
-        private RadioButton radioButton3;
+        private RadioButton RateMyRB;
+        private RadioButton AfternoonRB;
+        private RadioButton EarlyMorningRB;
         private Panel panel4;
         private RadioButton radioButton6;
         private ListBox listBox3;
@@ -730,5 +783,9 @@
         private TextBox ClassIDTB;
         private Label label16;
         private Button button2;
+        private Button button4;
+        private Button button3;
+        private GroupBox groupBox1;
+        private RadioButton NoOptRB;
     }
 }

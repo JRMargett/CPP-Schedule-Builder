@@ -4727,7 +4727,18 @@ namespace CPP_Schedule_Builder
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            dataGridView1.Rows.Clear();
+            if (MinCommuteRB.Checked)
+            {
+                if (studentSchedule.BuildMinCommuteSchedule())
+                {
+                    ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
+                    richTextBox1.Text = "Schedule created successfully.";
+                }
+                else
+                {
+                    richTextBox1.Text = "No valid schedule could be built.";
+                }
+            }
             if (studentSchedule.TryBuildSchedule())
             {
                 ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
@@ -4737,6 +4748,57 @@ namespace CPP_Schedule_Builder
             {
                 richTextBox1.Text = "No valid schedule could be built.";
             }
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog()
+            {
+                Filter = "Text Files (*.txt)|*.txt",
+                Title = "Import Lectures"
+            };
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                studentSchedule.ImportSchedule(dialog.FileName);
+                LectureDisplay.Items.Clear();
+                foreach (Lecture lecture in studentSchedule.Lectures)
+                {
+                    LectureDisplay.Items.Add($"{lecture.ClassCode} - {lecture.ClassName} | {lecture.Instructor}");
+                }
+                richTextBox1.Text = "Lectures imported successfully.";
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "Text Files (*.txt)|*.txt",
+                Title = "Export Lectures"
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                studentSchedule.ExportSchedule(dialog.FileName);
+                richTextBox1.Text = "Lectures exported successfully.";
+            }
+            else
+                richTextBox1.Text = "Export Failed.";
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton7_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
 
         }
     }
