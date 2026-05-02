@@ -10,6 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\courses.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\courses.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Assests\" />
   </ItemGroup>
 
