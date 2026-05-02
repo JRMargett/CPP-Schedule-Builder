@@ -18,7 +18,7 @@ namespace CPP_Schedule_Builder
         public string StartAM_PM { get; set; }
         public string EndAM_PM { get; set; }
         public TimeSpan EndTime { get; set; }
-        public string Color { get; set; }
+        public string Color { get; set; } = string.Empty;
         public Lecture(int classID, string className, string classCode, string instructor, List<DayOfWeek> days, TimeSpan startTime, string startAM_PM, TimeSpan endTime, string endAM_PM)
             {
                 ClassID = classID;

@@ -1,12 +1,25 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CPP_Schedule_Builder
 {
-    internal class ScheduleMorning
+    internal class ScheduleMorning : ScheduleTimePreference
     {
+        private static readonly TimeSpan Noon = new TimeSpan(12, 0, 0);
+
+        public ScheduleMorning()
+        {
+        }
+
+        public ScheduleMorning(IEnumerable<Lecture> selectedLectures): base(selectedLectures)
+        {
+        }
+
+        protected override string PreferredTimeName => "morning";
+
+        protected override bool IsPreferredStart(TimeSpan startTime)
+        {
+            return startTime < Noon;
+        }
     }
 }

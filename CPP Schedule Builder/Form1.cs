@@ -1,6 +1,7 @@
 using System.Drawing.Text;
 using System.Text.Json;
 using System.IO;
+using System.Text;
 
 namespace CPP_Schedule_Builder
 {
@@ -15,10 +16,12 @@ namespace CPP_Schedule_Builder
         {
             string path = Path.Combine(AppContext.BaseDirectory, "Data", CourseDataFileName);
 
-            try {
+            try
+            {
                 return JsonSerializer.Deserialize<Dictionary<string, string[]>>(File.ReadAllText(path)) ?? new Dictionary<string, string[]>();
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException) {
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+            {
                 MessageBox.Show(
                     $"Unable to load course data from {path}.{Environment.NewLine}{ex.Message}",
                     "Course Data Error",
@@ -33,6 +36,23 @@ namespace CPP_Schedule_Builder
         public Form1()
         {
             InitializeComponent();
+            ConfigureLectureDisplay();
+            ConfigureScheduleDetailsDisplay();
+        }
+
+        private bool isUpdatingLectureDisplay;
+
+        private void ConfigureLectureDisplay()
+        {
+            LectureDisplay.HideSelection = false;
+            LectureDisplay.WordWrap = false;
+            LectureDisplay.SelectionChanged += LectureDisplay_SelectionChanged;
+        }
+
+        private void ConfigureScheduleDetailsDisplay()
+        {
+            richTextBox2.ScrollBars = RichTextBoxScrollBars.Both;
+            richTextBox2.WordWrap = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -154,13 +174,20 @@ namespace CPP_Schedule_Builder
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            if (CourseNumber.SelectedItem == null)
+            if (CourseSubject.SelectedItem is not string selectedSubject)
+            {
+                richTextBox1.Text = "Please select a subject.";
+                return;
+            }
+
+            if (CourseNumber.SelectedItem is not string input)
             {
                 richTextBox1.Text = "Please select a course number.";
                 return;
             }
 
-            if (StartAM_PMCB.SelectedItem == null || EndAM_PMCB.SelectedItem == null)
+            if (StartAM_PMCB.SelectedItem is not string startAM_PM ||
+                EndAM_PMCB.SelectedItem is not string endAM_PM)
             {
                 richTextBox1.Text = "Please select AM or PM for both start and end times.";
                 return;
@@ -177,9 +204,14 @@ namespace CPP_Schedule_Builder
                 return;
             }
 
-            string input = CourseNumber.SelectedItem.ToString();
-            string[] parts = input.Split('-');
-            string code = parts[0].Trim();
+            string[] parts = input.Split('-', 2);
+            if (parts.Length != 2)
+            {
+                richTextBox1.Text = "Selected course format is invalid.";
+                return;
+            }
+
+            string code = $"{selectedSubject} {parts[0].Trim()}";
             string name = parts[1].Trim();
 
             var days = new List<DayOfWeek>();
@@ -198,9 +230,6 @@ namespace CPP_Schedule_Builder
             TimeSpan start = new TimeSpan(int.Parse(StartTimeHr.Text), int.Parse(StartTimeMin.Text), 0);
             TimeSpan end = new TimeSpan(int.Parse(EndTimeHr.Text), int.Parse(EndTimeMin.Text), 0);
 
-            string startAM_PM = StartAM_PMCB.SelectedItem.ToString();
-            string endAM_PM = EndAM_PMCB.SelectedItem.ToString();
-
             Lecture lecture = new Lecture(
                 int.Parse(ClassIDTB.Text),
                 name,
@@ -214,10 +243,10 @@ namespace CPP_Schedule_Builder
             );
 
 
-            LectureDisplay.Items.Add(
-                $"{lecture.ClassCode} - {lecture.ClassName} | {lecture.Instructor}"
-            );
-            studentSchedule.AddLecture(lecture);
+            if (studentSchedule.AddLecture(lecture))
+            {
+                AddLectureToDisplay(lecture);
+            }
 
             ClassIDTB.Clear();
             InstructorTB.Clear();
@@ -245,33 +274,313 @@ namespace CPP_Schedule_Builder
 
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void LectureDisplay_SelectionChanged(object? sender, EventArgs e)
         {
+            DisplaySelectedLectureDetails();
+        }
 
+        private void DisplaySelectedLectureDetails()
+        {
+            if (isUpdatingLectureDisplay)
+            {
+                return;
+            }
+
+            Lecture? selectedLecture = GetSelectedLectureFromDisplay();
+            if (selectedLecture != null)
+            {
+                DisplayLectureDetails(selectedLecture);
+            }
+        }
+
+        private Lecture? GetSelectedLectureFromDisplay()
+        {
+            if (LectureDisplay.TextLength == 0)
+            {
+                return null;
+            }
+
+            int lineIndex = LectureDisplay.GetLineFromCharIndex(LectureDisplay.SelectionStart);
+            if (lineIndex >= 0 && lineIndex < studentSchedule.Lectures.Count)
+            {
+                return studentSchedule.Lectures[lineIndex];
+            }
+
+            return null;
+        }
+
+        private void AddLectureToDisplay(Lecture lecture)
+        {
+            isUpdatingLectureDisplay = true;
+
+            try
+            {
+                if (LectureDisplay.TextLength > 0)
+                {
+                    LectureDisplay.AppendText(Environment.NewLine);
+                }
+
+                LectureDisplay.AppendText(FormatLectureDisplayLine(lecture));
+            }
+            finally
+            {
+                isUpdatingLectureDisplay = false;
+            }
+        }
+
+        private void RefreshLectureDisplay()
+        {
+            isUpdatingLectureDisplay = true;
+
+            try
+            {
+                LectureDisplay.Clear();
+
+                foreach (Lecture lecture in studentSchedule.Lectures)
+                {
+                    if (LectureDisplay.TextLength > 0)
+                    {
+                        LectureDisplay.AppendText(Environment.NewLine);
+                    }
+
+                    LectureDisplay.AppendText(FormatLectureDisplayLine(lecture));
+                }
+            }
+            finally
+            {
+                isUpdatingLectureDisplay = false;
+            }
+        }
+
+        private static string FormatLectureDisplayLine(Lecture lecture)
+        {
+            string classType = GetClassType(lecture);
+            string className = GetClassNameWithoutType(lecture.ClassName, classType);
+            string professorName = string.IsNullOrWhiteSpace(lecture.Instructor)
+                ? "TBA"
+                : lecture.Instructor.Trim();
+
+            return $"{lecture.ClassID} | {lecture.ClassCode} | {className} | Prof. {professorName} | {FormatCompactDays(lecture.Days)} | {FormatCompactTimeRange(lecture)}";
+        }
+
+        private void DisplayLectureDetails(Lecture lecture)
+        {
+            ClearScheduleDetailsDisplay();
+            AddLectureDetailsToDisplay(lecture, new Dictionary<string, ProfessorRating>(StringComparer.OrdinalIgnoreCase));
+        }
+
+        private void DisplayChosenScheduleDetails()
+        {
+            ClearScheduleDetailsDisplay();
+            Dictionary<string, ProfessorRating> ratingByInstructor =
+                new Dictionary<string, ProfessorRating>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Lecture lecture in studentSchedule.ScheduleLectures)
+            {
+                AddLectureDetailsToDisplay(lecture, ratingByInstructor);
+            }
+        }
+
+        private void ClearScheduleDetailsDisplay()
+        {
+            richTextBox2.Clear();
+        }
+
+        private void AddScheduleDetailLine(string text)
+        {
+            richTextBox2.AppendText(text);
+            richTextBox2.AppendText(Environment.NewLine);
+        }
+
+        private void AddLectureDetailsToDisplay(Lecture lecture, Dictionary<string, ProfessorRating> ratingByInstructor)
+        {
+            if (lecture == null)
+                return;
+
+            string classType = GetClassType(lecture);
+            string className = GetClassNameWithoutType(lecture.ClassName, classType);
+            string rmsScore = GetRmpScoreText(lecture, ratingByInstructor);
+            string professorName = string.IsNullOrWhiteSpace(lecture.Instructor)
+                ? "TBA"
+                : lecture.Instructor.Trim();
+
+            AddScheduleDetailLine(
+                $"{lecture.ClassID} | {lecture.ClassCode} | {className} | Prof. {professorName} | RMS{{{rmsScore}}} | {FormatCompactDays(lecture.Days)} | {FormatCompactTimeRange(lecture)}");
+        }
+
+        private static string GetClassType(Lecture lecture)
+        {
+            string className = lecture.ClassName.Trim();
+            string classCode = lecture.ClassCode.Trim();
+            string[] knownTypes =
+            {
+                "Service Learning Activity",
+                "Recitation Activity",
+                "Laboratory",
+                "Discussion",
+                "Recitation",
+                "Activity",
+                "Seminar",
+                "Lecture",
+                "Studio",
+                "Lab"
+            };
+
+            foreach (string knownType in knownTypes)
+            {
+                if (className.EndsWith(" " + knownType, StringComparison.OrdinalIgnoreCase))
+                {
+                    return knownType == "Lab" ? "Laboratory" : knownType;
+                }
+            }
+
+            if (classCode.EndsWith("L", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Laboratory";
+            }
+
+            if (classCode.EndsWith("A", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Activity";
+            }
+
+            return "Lecture";
+        }
+
+        private static string GetClassNameWithoutType(string className, string classType)
+        {
+            string trimmedClassName = className.Trim();
+            if (trimmedClassName.EndsWith(" " + classType, StringComparison.OrdinalIgnoreCase))
+            {
+                return trimmedClassName[..^classType.Length].Trim();
+            }
+
+            if (classType == "Laboratory" &&
+                trimmedClassName.EndsWith(" Lab", StringComparison.OrdinalIgnoreCase))
+            {
+                return trimmedClassName[..^"Lab".Length].Trim();
+            }
+
+            return trimmedClassName;
+        }
+
+        private string GetRmpScoreText(Lecture lecture, Dictionary<string, ProfessorRating> ratingByInstructor)
+        {
+            if (string.IsNullOrWhiteSpace(lecture.Instructor))
+            {
+                return "no instructor";
+            }
+
+            if (!ratingByInstructor.TryGetValue(lecture.Instructor, out ProfessorRating? professorRating))
+            {
+                try
+                {
+                    professorRating = ProfessorRating.GetProfessorRating(lecture.Instructor);
+                }
+                catch
+                {
+                    professorRating = new ProfessorRating { Found = false };
+                }
+
+                ratingByInstructor[lecture.Instructor] = professorRating;
+            }
+
+            if (!professorRating.Found || !professorRating.Rating.HasValue)
+            {
+                return "not found";
+            }
+
+            return professorRating.Rating.Value.ToString("F1");
+        }
+
+        private static string FormatCompactDays(IEnumerable<DayOfWeek> days)
+        {
+            DayOfWeek[] dayOrder =
+            {
+                DayOfWeek.Monday,
+                DayOfWeek.Tuesday,
+                DayOfWeek.Wednesday,
+                DayOfWeek.Thursday,
+                DayOfWeek.Friday,
+                DayOfWeek.Saturday,
+                DayOfWeek.Sunday
+            };
+
+            Dictionary<DayOfWeek, string> dayNames = new Dictionary<DayOfWeek, string>
+            {
+                [DayOfWeek.Monday] = "Mo",
+                [DayOfWeek.Tuesday] = "Tu",
+                [DayOfWeek.Wednesday] = "We",
+                [DayOfWeek.Thursday] = "Th",
+                [DayOfWeek.Friday] = "Fr",
+                [DayOfWeek.Saturday] = "Sa",
+                [DayOfWeek.Sunday] = "Su"
+            };
+
+            return string.Join(" ", days
+                .OrderBy(day => Array.IndexOf(dayOrder, day))
+                .Select(day => dayNames[day]));
+        }
+
+        private static string FormatCompactTimeRange(Lecture lecture)
+        {
+            return $"{FormatCompactTime(lecture.StartTime, lecture.StartAM_PM)}-{FormatCompactTime(lecture.EndTime, lecture.EndAM_PM)}";
+        }
+
+        private static string FormatCompactTime(TimeSpan time, string amPm)
+        {
+            return $"{time.Hours}:{time.Minutes:D2}{amPm.Trim().ToLowerInvariant()}";
+        }
+
+        private void ShowScheduleStatus(string message, IEnumerable<string> notes)
+        {
+            StringBuilder statusText = new StringBuilder(message);
+
+            foreach (string note in notes.Where(note => !string.IsNullOrWhiteSpace(note)))
+            {
+                statusText.AppendLine();
+                statusText.Append("- ");
+                statusText.Append(note);
+            }
+
+            richTextBox1.Text = statusText.ToString();
         }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            if (MinCommuteRB.Checked)
+            bool scheduleBuilt;
+
+            if (EarlyMorningRB.Checked)
             {
-                if (studentSchedule.BuildMinCommuteSchedule())
-                {
-                    ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
-                    richTextBox1.Text = "Schedule created successfully.";
-                }
-                else
-                {
-                    richTextBox1.Text = "No valid schedule could be built.";
-                }
+                scheduleBuilt = studentSchedule.BuildMorningSchedule();
             }
-            if (studentSchedule.TryBuildSchedule())
+            else if (AfternoonRB.Checked)
             {
-                ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
-                richTextBox1.Text = "Schedule created successfully.";
+                scheduleBuilt = studentSchedule.BuildAfternoonSchedule();
+            }
+            else if (MinCommuteRB.Checked)
+            {
+                scheduleBuilt = studentSchedule.BuildMinCommuteSchedule();
+            }
+            else if (RateMyRB.Checked)
+            {
+                scheduleBuilt = studentSchedule.BuildRMPscoreSchedule();
             }
             else
             {
-                richTextBox1.Text = "No valid schedule could be built.";
+                scheduleBuilt = studentSchedule.TryBuildSchedule();
+            }
+
+            if (scheduleBuilt)
+            {
+                DisplayChosenScheduleDetails();
+                ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
+                ShowScheduleStatus("Schedule created successfully.", studentSchedule.ScheduleNotes);
+            }
+            else
+            {
+                ClearScheduleDetailsDisplay();
+                ShowScheduleStatus("No valid schedule could be built.", studentSchedule.ScheduleNotes);
             }
 
         }
@@ -287,11 +596,7 @@ namespace CPP_Schedule_Builder
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 studentSchedule.ImportSchedule(dialog.FileName);
-                LectureDisplay.Items.Clear();
-                foreach (Lecture lecture in studentSchedule.Lectures)
-                {
-                    LectureDisplay.Items.Add($"{lecture.ClassCode} - {lecture.ClassName} | {lecture.Instructor}");
-                }
+                RefreshLectureDisplay();
                 richTextBox1.Text = "Lectures imported successfully.";
             }
         }
@@ -326,6 +631,10 @@ namespace CPP_Schedule_Builder
         {
 
         }
+
+        private void LectureDisplay_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
-

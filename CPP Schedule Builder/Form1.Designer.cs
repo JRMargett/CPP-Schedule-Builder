@@ -31,6 +31,7 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             panel1 = new Panel();
+            LectureDisplay = new RichTextBox();
             groupBox1 = new GroupBox();
             MinCommuteRB = new RadioButton();
             NoOptRB = new RadioButton();
@@ -60,7 +61,6 @@
             CourseNumber = new ComboBox();
             label12 = new Label();
             label10 = new Label();
-            LectureDisplay = new ListBox();
             label6 = new Label();
             CourseSubject = new ComboBox();
             label5 = new Label();
@@ -70,6 +70,7 @@
             label9 = new Label();
             comboBoxBindingSource1 = new BindingSource(components);
             panel2 = new Panel();
+            label17 = new Label();
             dataGridView1 = new DataGridView();
             Sunday = new DataGridViewTextBoxColumn();
             Monday = new DataGridViewTextBoxColumn();
@@ -80,8 +81,8 @@
             Saturday = new DataGridViewTextBoxColumn();
             radioButton10 = new RadioButton();
             panel3 = new Panel();
+            richTextBox2 = new RichTextBox();
             label14 = new Label();
-            listBox3 = new ListBox();
             radioButton1 = new RadioButton();
             panel4 = new Panel();
             label13 = new Label();
@@ -104,6 +105,7 @@
             // 
             panel1.BackColor = Color.FromArgb(255, 184, 28);
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(LectureDisplay);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(button4);
             panel1.Controls.Add(button3);
@@ -128,7 +130,6 @@
             panel1.Controls.Add(CourseNumber);
             panel1.Controls.Add(label12);
             panel1.Controls.Add(label10);
-            panel1.Controls.Add(LectureDisplay);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(CourseSubject);
             panel1.Controls.Add(label5);
@@ -141,6 +142,17 @@
             panel1.Size = new Size(482, 508);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
+            // 
+            // LectureDisplay
+            // 
+            LectureDisplay.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            LectureDisplay.Location = new Point(7, 338);
+            LectureDisplay.Name = "LectureDisplay";
+            LectureDisplay.ReadOnly = true;
+            LectureDisplay.Size = new Size(331, 157);
+            LectureDisplay.TabIndex = 57;
+            LectureDisplay.Text = "";
+            LectureDisplay.TextChanged += LectureDisplay_TextChanged;
             // 
             // groupBox1
             // 
@@ -219,7 +231,7 @@
             button4.Location = new Point(400, 101);
             button4.Name = "button4";
             button4.Size = new Size(75, 23);
-            button4.TabIndex = 56;
+            button4.TabIndex = 3;
             button4.Text = "Export";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
@@ -229,18 +241,19 @@
             button3.Location = new Point(400, 77);
             button3.Name = "button3";
             button3.Size = new Size(75, 23);
-            button3.TabIndex = 55;
+            button3.TabIndex = 2;
             button3.Text = "Import";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
             // button2
             // 
-            button2.Location = new Point(378, 452);
+            button2.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
+            button2.Location = new Point(383, 452);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
             button2.TabIndex = 54;
-            button2.Text = "button2";
+            button2.Text = "Run";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click_1;
             // 
@@ -250,7 +263,7 @@
             button1.Location = new Point(383, 198);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
-            button1.TabIndex = 53;
+            button1.TabIndex = 14;
             button1.Text = "Add";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click_1;
@@ -261,7 +274,7 @@
             ClassIDTB.Location = new Point(110, 260);
             ClassIDTB.Name = "ClassIDTB";
             ClassIDTB.Size = new Size(79, 25);
-            ClassIDTB.TabIndex = 52;
+            ClassIDTB.TabIndex = 12;
             ClassIDTB.TextChanged += textBox6_TextChanged;
             // 
             // label16
@@ -280,7 +293,7 @@
             InstructorTB.Location = new Point(194, 260);
             InstructorTB.Name = "InstructorTB";
             InstructorTB.Size = new Size(243, 25);
-            InstructorTB.TabIndex = 50;
+            InstructorTB.TabIndex = 13;
             // 
             // label15
             // 
@@ -301,7 +314,7 @@
             EndAM_PMCB.Location = new Point(310, 201);
             EndAM_PMCB.Name = "EndAM_PMCB";
             EndAM_PMCB.Size = new Size(43, 25);
-            EndAM_PMCB.TabIndex = 48;
+            EndAM_PMCB.TabIndex = 11;
             // 
             // StartAM_PMCB
             // 
@@ -311,7 +324,7 @@
             StartAM_PMCB.Location = new Point(176, 201);
             StartAM_PMCB.Name = "StartAM_PMCB";
             StartAM_PMCB.Size = new Size(43, 25);
-            StartAM_PMCB.TabIndex = 47;
+            StartAM_PMCB.TabIndex = 8;
             // 
             // EndTimeMin
             // 
@@ -319,7 +332,7 @@
             EndTimeMin.Location = new Point(268, 201);
             EndTimeMin.Name = "EndTimeMin";
             EndTimeMin.Size = new Size(36, 25);
-            EndTimeMin.TabIndex = 45;
+            EndTimeMin.TabIndex = 10;
             // 
             // EndTimeHr
             // 
@@ -327,7 +340,7 @@
             EndTimeHr.Location = new Point(244, 201);
             EndTimeHr.Name = "EndTimeHr";
             EndTimeHr.Size = new Size(18, 25);
-            EndTimeHr.TabIndex = 44;
+            EndTimeHr.TabIndex = 9;
             // 
             // label11
             // 
@@ -344,7 +357,7 @@
             StartTimeMin.Location = new Point(134, 201);
             StartTimeMin.Name = "StartTimeMin";
             StartTimeMin.Size = new Size(36, 25);
-            StartTimeMin.TabIndex = 42;
+            StartTimeMin.TabIndex = 7;
             // 
             // label1
             // 
@@ -361,7 +374,7 @@
             StartTimeHr.Location = new Point(110, 201);
             StartTimeHr.Name = "StartTimeHr";
             StartTimeHr.Size = new Size(18, 25);
-            StartTimeHr.TabIndex = 40;
+            StartTimeHr.TabIndex = 6;
             StartTimeHr.TextChanged += textBox1_TextChanged;
             // 
             // DayCheckBox
@@ -374,7 +387,7 @@
             DayCheckBox.Location = new Point(8, 199);
             DayCheckBox.Name = "DayCheckBox";
             DayCheckBox.Size = new Size(120, 100);
-            DayCheckBox.TabIndex = 39;
+            DayCheckBox.TabIndex = 5;
             DayCheckBox.SelectedIndexChanged += checkedListBox1_SelectedIndexChanged;
             // 
             // label8
@@ -415,7 +428,7 @@
             CourseNumber.Location = new Point(96, 129);
             CourseNumber.Name = "CourseNumber";
             CourseNumber.Size = new Size(379, 36);
-            CourseNumber.TabIndex = 28;
+            CourseNumber.TabIndex = 5;
             CourseNumber.SelectedIndexChanged += CourseNumber_SelectedIndexChanged;
             // 
             // label12
@@ -436,17 +449,6 @@
             label10.TabIndex = 20;
             label10.Text = "Selected Courses";
             // 
-            // LectureDisplay
-            // 
-            LectureDisplay.Font = new Font("Segoe UI", 10F);
-            LectureDisplay.FormattingEnabled = true;
-            LectureDisplay.ItemHeight = 17;
-            LectureDisplay.Location = new Point(8, 333);
-            LectureDisplay.Name = "LectureDisplay";
-            LectureDisplay.Size = new Size(330, 157);
-            LectureDisplay.TabIndex = 10;
-            LectureDisplay.SelectedIndexChanged += listBox1_SelectedIndexChanged;
-            // 
             // label6
             // 
             label6.AutoSize = true;
@@ -465,7 +467,7 @@
             CourseSubject.Location = new Point(7, 129);
             CourseSubject.Name = "CourseSubject";
             CourseSubject.Size = new Size(83, 36);
-            CourseSubject.TabIndex = 7;
+            CourseSubject.TabIndex = 4;
             CourseSubject.SelectedIndexChanged += CourseSubject_SelectedIndexChanged;
             // 
             // label5
@@ -530,6 +532,7 @@
             // 
             panel2.BackColor = Color.FromArgb(255, 184, 28);
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(label17);
             panel2.Controls.Add(dataGridView1);
             panel2.Controls.Add(radioButton10);
             panel2.Location = new Point(500, 12);
@@ -538,14 +541,25 @@
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
             // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+            label17.Location = new Point(3, 0);
+            label17.Name = "label17";
+            label17.RightToLeft = RightToLeft.Yes;
+            label17.Size = new Size(97, 28);
+            label17.TabIndex = 57;
+            label17.Text = "Schedule";
+            // 
             // dataGridView1
             // 
             dataGridView1.BackgroundColor = Color.FromArgb(255, 255, 128);
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday });
-            dataGridView1.Location = new Point(8, 17);
+            dataGridView1.Location = new Point(8, 29);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(569, 196);
+            dataGridView1.Size = new Size(569, 357);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
@@ -607,31 +621,31 @@
             // 
             panel3.BackColor = Color.FromArgb(255, 184, 28);
             panel3.BorderStyle = BorderStyle.Fixed3D;
+            panel3.Controls.Add(richTextBox2);
             panel3.Controls.Add(label14);
-            panel3.Controls.Add(listBox3);
             panel3.Controls.Add(radioButton1);
             panel3.Location = new Point(500, 420);
             panel3.Name = "panel3";
             panel3.Size = new Size(298, 100);
             panel3.TabIndex = 2;
             // 
+            // richTextBox2
+            // 
+            richTextBox2.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            richTextBox2.Location = new Point(8, 22);
+            richTextBox2.Name = "richTextBox2";
+            richTextBox2.Size = new Size(279, 71);
+            richTextBox2.TabIndex = 30;
+            richTextBox2.Text = "";
+            // 
             // label14
             // 
             label14.AutoSize = true;
             label14.Location = new Point(3, 1);
             label14.Name = "label14";
-            label14.Size = new Size(81, 15);
+            label14.Size = new Size(121, 15);
             label14.TabIndex = 29;
-            label14.Text = "Class Sections";
-            // 
-            // listBox3
-            // 
-            listBox3.FormattingEnabled = true;
-            listBox3.ItemHeight = 15;
-            listBox3.Location = new Point(3, 26);
-            listBox3.Name = "listBox3";
-            listBox3.Size = new Size(159, 64);
-            listBox3.TabIndex = 28;
+            label14.Text = "Final Schedule Details";
             // 
             // radioButton1
             // 
@@ -667,9 +681,10 @@
             // 
             // richTextBox1
             // 
+            richTextBox1.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             richTextBox1.Location = new Point(3, 22);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(255, 71);
+            richTextBox1.Size = new Size(279, 71);
             richTextBox1.TabIndex = 17;
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
@@ -743,7 +758,6 @@
         private Label label3;
         private Label label4;
         private Label label5;
-        private ListBox LectureDisplay;
         private Label label6;
         private ComboBox CourseSubject;
         private Label label10;
@@ -755,7 +769,6 @@
         private RadioButton EarlyMorningRB;
         private Panel panel4;
         private RadioButton radioButton6;
-        private ListBox listBox3;
         private RichTextBox richTextBox1;
         private Label label14;
         private Label label13;
@@ -787,5 +800,8 @@
         private Button button3;
         private GroupBox groupBox1;
         private RadioButton NoOptRB;
+        private Label label17;
+        private RichTextBox richTextBox2;
+        private RichTextBox LectureDisplay;
     }
 }

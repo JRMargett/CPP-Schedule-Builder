@@ -8,7 +8,7 @@ namespace CPP_Schedule_Builder
 {
     internal class ScheduleMinCommute : Schedule
     {
-        private List<Lecture> BuildMinCommuteSchedule()
+        private new List<Lecture> BuildMinCommuteSchedule()
         {
             TimeSpan MorningTrafficStart = new TimeSpan(7, 0, 0);
             TimeSpan MorningTrafficEnd = new TimeSpan(9, 0, 0);

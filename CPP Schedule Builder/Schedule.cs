@@ -8,10 +8,12 @@ namespace CPP_Schedule_Builder
 {
     internal class Schedule
     {
-        private readonly List<Lecture> lectures = new List<Lecture>();
-        private readonly List<Lecture> scheduleLectures = new List<Lecture>();
+        protected readonly List<Lecture> lectures = new List<Lecture>();
+        protected readonly List<Lecture> scheduleLectures = new List<Lecture>();
+        protected readonly List<string> scheduleNotes = new List<string>();
         public IReadOnlyList<Lecture> Lectures => lectures.AsReadOnly();
         public IReadOnlyList<Lecture> ScheduleLectures => scheduleLectures.AsReadOnly();
+        public IReadOnlyList<string> ScheduleNotes => scheduleNotes.AsReadOnly();
 
         public bool AddLecture(Lecture lecture)
         {
@@ -23,7 +25,7 @@ namespace CPP_Schedule_Builder
 
         public bool RemoveLecture(int classId)
         {
-            Lecture lectureToRemove = lectures.FirstOrDefault(l => l.ClassID == classId);
+            Lecture? lectureToRemove = lectures.FirstOrDefault(l => l.ClassID == classId);
 
             if (lectureToRemove == null)
                 return false;
@@ -128,8 +130,9 @@ namespace CPP_Schedule_Builder
         {
             return $"{time.Hours:D2}:{time.Minutes:D2} {amPm}";
         }
-        public bool TryBuildSchedule()
+        public virtual bool TryBuildSchedule()
         {
+            scheduleNotes.Clear();
             scheduleLectures.Clear();
             foreach (Lecture lecture in lectures)
             {
@@ -212,6 +215,7 @@ namespace CPP_Schedule_Builder
         }
         public bool BuildMinCommuteSchedule()
         {
+            scheduleNotes.Clear();
             TimeSpan MorningTrafficStart = new TimeSpan(7, 0, 0);
             TimeSpan MorningTrafficEnd = new TimeSpan(9, 0, 0);
             TimeSpan EveningTrafficStart = new TimeSpan(16, 0, 0);
@@ -234,14 +238,51 @@ namespace CPP_Schedule_Builder
             }
             scoredLectures = scoredLectures.OrderBy(x => x.score).ToList();
 
-            if (TryBuildSchedule())
+            scheduleLectures.Clear();
+            foreach (var item in scoredLectures)
             {
-                return true;
+                Lecture lecture = item.lecture;
+                if (!HasConflict(lecture))
+                {
+                    scheduleLectures.Add(lecture);
+                }
             }
-            else
-            {
-                return false;
-            }
+
+            return scheduleLectures.Count > 0;
+        }
+        public bool BuildMorningSchedule()
+        {
+            ScheduleMorning morningSchedule = new ScheduleMorning(Lectures);
+            bool scheduleBuilt = morningSchedule.TryBuildSchedule();
+
+            scheduleLectures.Clear();
+            scheduleLectures.AddRange(morningSchedule.ScheduleLectures);
+            scheduleNotes.Clear();
+            scheduleNotes.AddRange(morningSchedule.ScheduleNotes);
+
+            return scheduleBuilt;
+        }
+        public bool BuildAfternoonSchedule()
+        {
+            ScheduleAfternoon afternoonSchedule = new ScheduleAfternoon(Lectures);
+            bool scheduleBuilt = afternoonSchedule.TryBuildSchedule();
+
+            scheduleLectures.Clear();
+            scheduleLectures.AddRange(afternoonSchedule.ScheduleLectures);
+            scheduleNotes.Clear();
+            scheduleNotes.AddRange(afternoonSchedule.ScheduleNotes);
+
+            return scheduleBuilt;
+        }
+        public bool BuildRMPscoreSchedule()
+        {
+            ScheduleRMPscore rmpSchedule = new ScheduleRMPscore(Lectures);
+            bool scheduleBuilt = rmpSchedule.TryBuildSchedule();
+            scheduleLectures.Clear();
+            scheduleLectures.AddRange(rmpSchedule.ScheduleLectures);
+            scheduleNotes.Clear();
+
+            return scheduleBuilt;
         }
     }
 }
