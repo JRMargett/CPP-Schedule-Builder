@@ -31,6 +31,7 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             panel1 = new Panel();
+            clearButton = new Button();
             LectureDisplay = new RichTextBox();
             groupBox1 = new GroupBox();
             MinCommuteRB = new RadioButton();
@@ -93,7 +94,6 @@
             autoCompleteCustomSourceBindingSource = new BindingSource(components);
             printDialog1 = new PrintDialog();
             printPreviewDialog1 = new PrintPreviewDialog();
-            clearButton = new Button();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource1).BeginInit();
@@ -147,6 +147,16 @@
             panel1.Size = new Size(482, 508);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
+            // 
+            // clearButton
+            // 
+            clearButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
+            clearButton.Location = new Point(375, 478);
+            clearButton.Name = "clearButton";
+            clearButton.Size = new Size(75, 23);
+            clearButton.TabIndex = 58;
+            clearButton.Text = "Clear";
+            clearButton.UseVisualStyleBackColor = true;
             // 
             // LectureDisplay
             // 
@@ -225,10 +235,10 @@
             RateMyRB.AutoSize = true;
             RateMyRB.Location = new Point(6, 73);
             RateMyRB.Name = "RateMyRB";
-            RateMyRB.Size = new Size(120, 19);
+            RateMyRB.Size = new Size(125, 19);
             RateMyRB.TabIndex = 26;
             RateMyRB.TabStop = true;
-            RateMyRB.Text = "RateMyProffScore";
+            RateMyRB.Text = "Rate My Prof Score";
             RateMyRB.UseVisualStyleBackColor = true;
             // 
             // button4
@@ -741,16 +751,6 @@
             printPreviewDialog1.Name = "printPreviewDialog1";
             printPreviewDialog1.Visible = false;
             printPreviewDialog1.Load += printPreviewDialog1_Load;
-            // 
-            // clearButton
-            // 
-            clearButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            clearButton.Location = new Point(375, 478);
-            clearButton.Name = "clearButton";
-            clearButton.Size = new Size(75, 23);
-            clearButton.TabIndex = 58;
-            clearButton.Text = "Clear";
-            clearButton.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
