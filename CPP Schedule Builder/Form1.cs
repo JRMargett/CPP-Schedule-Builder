@@ -1,4 +1,5 @@
 using System.Drawing.Text;
+using System.Drawing.Printing;
 using System.Text.Json;
 using System.IO;
 using System.Text;
@@ -33,9 +34,11 @@ namespace CPP_Schedule_Builder
         }
 
         private Schedule studentSchedule = new Schedule();
+        private int printScheduleRowIndex;
         public Form1()
         {
             InitializeComponent();
+            clearButton.Click += clearButton_Click;
             ConfigureLectureDisplay();
             ConfigureScheduleDetailsDisplay();
         }
@@ -548,39 +551,54 @@ namespace CPP_Schedule_Builder
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            bool scheduleBuilt;
+            richTextBox1.Text = "Creating schedule, please wait...";
+            richTextBox1.Refresh();
 
-            if (EarlyMorningRB.Checked)
-            {
-                scheduleBuilt = studentSchedule.BuildMorningSchedule();
-            }
-            else if (AfternoonRB.Checked)
-            {
-                scheduleBuilt = studentSchedule.BuildAfternoonSchedule();
-            }
-            else if (MinCommuteRB.Checked)
-            {
-                scheduleBuilt = studentSchedule.BuildMinCommuteSchedule();
-            }
-            else if (RateMyRB.Checked)
-            {
-                scheduleBuilt = studentSchedule.BuildRMPscoreSchedule();
-            }
-            else
-            {
-                scheduleBuilt = studentSchedule.TryBuildSchedule();
-            }
+            Cursor previousCursor = Cursor.Current ?? Cursors.Default;
+            Cursor.Current = Cursors.WaitCursor;
+            button2.Enabled = false;
 
-            if (scheduleBuilt)
+            try
             {
-                DisplayChosenScheduleDetails();
-                ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
-                ShowScheduleStatus("Schedule created successfully.", studentSchedule.ScheduleNotes);
+                bool scheduleBuilt;
+
+                if (EarlyMorningRB.Checked)
+                {
+                    scheduleBuilt = studentSchedule.BuildMorningSchedule();
+                }
+                else if (AfternoonRB.Checked)
+                {
+                    scheduleBuilt = studentSchedule.BuildAfternoonSchedule();
+                }
+                else if (MinCommuteRB.Checked)
+                {
+                    scheduleBuilt = studentSchedule.BuildMinCommuteSchedule();
+                }
+                else if (RateMyRB.Checked)
+                {
+                    scheduleBuilt = studentSchedule.BuildRMPscoreSchedule();
+                }
+                else
+                {
+                    scheduleBuilt = studentSchedule.TryBuildSchedule();
+                }
+
+                if (scheduleBuilt)
+                {
+                    DisplayChosenScheduleDetails();
+                    ScheduleDisplayHelper.LoadScheduleIntoGrid(dataGridView1, studentSchedule);
+                    ShowScheduleStatus("Schedule created successfully.", studentSchedule.ScheduleNotes);
+                }
+                else
+                {
+                    ClearScheduleDetailsDisplay();
+                    ShowScheduleStatus("No valid schedule could be built.", studentSchedule.ScheduleNotes);
+                }
             }
-            else
+            finally
             {
-                ClearScheduleDetailsDisplay();
-                ShowScheduleStatus("No valid schedule could be built.", studentSchedule.ScheduleNotes);
+                button2.Enabled = true;
+                Cursor.Current = previousCursor;
             }
 
         }
@@ -633,6 +651,242 @@ namespace CPP_Schedule_Builder
         }
 
         private void LectureDisplay_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void clearButton_Click(object? sender, EventArgs e)
+        {
+            studentSchedule = new Schedule();
+            LectureDisplay.Clear();
+            ClearScheduleDetailsDisplay();
+            dataGridView1.Rows.Clear();
+            richTextBox1.Text = "Selected classes cleared.";
+        }
+
+        private void printschedulebutton_Click(object sender, EventArgs e)
+        {
+            if (!studentSchedule.ScheduleLectures.Any() || dataGridView1.Rows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Please generate a finalized schedule before printing.",
+                    "No Schedule to Print",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            using PrintDocument printDocument = new PrintDocument();
+            printDocument.DocumentName = "CPP Final Schedule";
+            printDocument.DefaultPageSettings.Landscape = true;
+            printDocument.BeginPrint += (_, _) => printScheduleRowIndex = 0;
+            printDocument.PrintPage += PrintSchedulePage;
+
+            printDialog1.Document = printDocument;
+
+            if (printDialog1.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                printDocument.Print();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Unable to print the schedule.{Environment.NewLine}{ex.Message}",
+                    "Print Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void PrintSchedulePage(object sender, PrintPageEventArgs e)
+        {
+            List<DataGridViewColumn> columns = GetPrintableGridColumns();
+            List<DataGridViewRow> rows = GetPrintableGridRows();
+
+            if (columns.Count == 0 || rows.Count == 0)
+            {
+                e.HasMorePages = false;
+                return;
+            }
+
+            Graphics? graphics = e.Graphics;
+            if (graphics == null)
+            {
+                e.HasMorePages = false;
+                return;
+            }
+
+            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+            using Font titleFont = new Font(Font.FontFamily, 14f, FontStyle.Bold);
+            using Font headerFont = new Font(Font.FontFamily, 8f, FontStyle.Bold);
+            using Font rowHeaderFont = new Font(Font.FontFamily, 7f, FontStyle.Regular);
+            using Font cellFont = new Font(Font.FontFamily, 6.5f, FontStyle.Regular);
+            using Pen borderPen = new Pen(Color.FromArgb(180, 180, 180));
+            using StringFormat centeredText = new StringFormat
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.EllipsisCharacter,
+                FormatFlags = StringFormatFlags.LineLimit
+            };
+
+            RectangleF pageBounds = e.MarginBounds;
+            float titleHeight = titleFont.GetHeight(graphics) + 8f;
+            RectangleF titleBounds = new RectangleF(pageBounds.Left, pageBounds.Top, pageBounds.Width, titleHeight);
+            graphics.DrawString("Final Schedule", titleFont, Brushes.Black, titleBounds, centeredText);
+
+            float gridTop = titleBounds.Bottom + 8f;
+            float headerHeight = 28f;
+            float availableGridHeight = pageBounds.Bottom - gridTop;
+            float availableRowHeight = availableGridHeight - headerHeight;
+
+            if (availableRowHeight <= 0)
+            {
+                e.HasMorePages = false;
+                return;
+            }
+
+            float timeColumnWidth = Math.Min(72f, pageBounds.Width * 0.14f);
+            float dayColumnWidth = (pageBounds.Width - timeColumnWidth) / columns.Count;
+            int remainingRowCount = rows.Count - printScheduleRowIndex;
+            float fittedRowHeight = availableRowHeight / Math.Max(remainingRowCount, 1);
+            float rowHeight = Math.Min(34f, Math.Max(18f, fittedRowHeight));
+            int rowsPerPage = Math.Max(1, (int)Math.Floor(availableRowHeight / rowHeight));
+            int lastRowIndex = Math.Min(printScheduleRowIndex + rowsPerPage, rows.Count);
+
+            Color headerBackColor = Color.FromArgb(0, 80, 48);
+            Color rowHeaderBackColor = GetPrintableHeaderBackColor(dataGridView1.RowHeadersDefaultCellStyle.BackColor);
+
+            RectangleF timeHeaderBounds = new RectangleF(pageBounds.Left, gridTop, timeColumnWidth, headerHeight);
+            DrawPrintCell(graphics, timeHeaderBounds, "Time", headerFont, headerBackColor, Color.White, borderPen, centeredText);
+
+            for (int columnPosition = 0; columnPosition < columns.Count; columnPosition++)
+            {
+                DataGridViewColumn column = columns[columnPosition];
+                RectangleF columnHeaderBounds = new RectangleF(
+                    pageBounds.Left + timeColumnWidth + (dayColumnWidth * columnPosition),
+                    gridTop,
+                    dayColumnWidth,
+                    headerHeight);
+
+                DrawPrintCell(graphics, columnHeaderBounds, column.HeaderText, headerFont, headerBackColor, Color.White, borderPen, centeredText);
+            }
+
+            float y = gridTop + headerHeight;
+
+            for (int rowIndex = printScheduleRowIndex; rowIndex < lastRowIndex; rowIndex++)
+            {
+                DataGridViewRow row = rows[rowIndex];
+                RectangleF rowHeaderBounds = new RectangleF(pageBounds.Left, y, timeColumnWidth, rowHeight);
+                string rowHeaderText = Convert.ToString(row.HeaderCell.Value) ?? string.Empty;
+                DrawPrintCell(graphics, rowHeaderBounds, rowHeaderText, rowHeaderFont, rowHeaderBackColor, Color.White, borderPen, centeredText);
+
+                for (int columnPosition = 0; columnPosition < columns.Count; columnPosition++)
+                {
+                    DataGridViewColumn column = columns[columnPosition];
+                    DataGridViewCell cell = row.Cells[column.Index];
+                    RectangleF cellBounds = new RectangleF(
+                        pageBounds.Left + timeColumnWidth + (dayColumnWidth * columnPosition),
+                        y,
+                        dayColumnWidth,
+                        rowHeight);
+
+                    DrawPrintCell(
+                        graphics,
+                        cellBounds,
+                        Convert.ToString(cell.Value) ?? string.Empty,
+                        cellFont,
+                        GetPrintableCellBackColor(cell),
+                        GetPrintableCellForeColor(cell),
+                        borderPen,
+                        centeredText);
+                }
+
+                y += rowHeight;
+            }
+
+            printScheduleRowIndex = lastRowIndex;
+            e.HasMorePages = printScheduleRowIndex < rows.Count;
+
+            if (!e.HasMorePages)
+            {
+                printScheduleRowIndex = 0;
+            }
+        }
+
+        private List<DataGridViewColumn> GetPrintableGridColumns()
+        {
+            return dataGridView1.Columns
+                .Cast<DataGridViewColumn>()
+                .Where(column => column.Visible)
+                .OrderBy(column => column.DisplayIndex)
+                .ToList();
+        }
+
+        private List<DataGridViewRow> GetPrintableGridRows()
+        {
+            return dataGridView1.Rows
+                .Cast<DataGridViewRow>()
+                .Where(row => row.Visible && !row.IsNewRow)
+                .ToList();
+        }
+
+        private static void DrawPrintCell(
+            Graphics graphics,
+            RectangleF bounds,
+            string text,
+            Font font,
+            Color backColor,
+            Color foreColor,
+            Pen borderPen,
+            StringFormat stringFormat)
+        {
+            RectangleF textBounds = RectangleF.Inflate(bounds, -3f, -2f);
+
+            using SolidBrush backBrush = new SolidBrush(backColor);
+            using SolidBrush textBrush = new SolidBrush(foreColor);
+
+            graphics.FillRectangle(backBrush, bounds);
+            graphics.DrawRectangle(borderPen, bounds.X, bounds.Y, bounds.Width, bounds.Height);
+            graphics.DrawString(text, font, textBrush, textBounds, stringFormat);
+        }
+
+        private static Color GetPrintableHeaderBackColor(Color color)
+        {
+            return color.IsEmpty ? Color.FromArgb(0, 80, 48) : color;
+        }
+
+        private static Color GetPrintableCellBackColor(DataGridViewCell cell)
+        {
+            Color color = cell.Style.BackColor;
+
+            if (color.IsEmpty)
+            {
+                color = cell.InheritedStyle.BackColor;
+            }
+
+            return color.IsEmpty ? Color.White : color;
+        }
+
+        private static Color GetPrintableCellForeColor(DataGridViewCell cell)
+        {
+            Color color = cell.Style.ForeColor;
+
+            if (color.IsEmpty)
+            {
+                color = cell.InheritedStyle.ForeColor;
+            }
+
+            return color.IsEmpty ? Color.Black : color;
+        }
+
+        private void printPreviewDialog1_Load(object sender, EventArgs e)
         {
 
         }

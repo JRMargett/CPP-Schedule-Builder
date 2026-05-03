@@ -70,6 +70,7 @@
             label9 = new Label();
             comboBoxBindingSource1 = new BindingSource(components);
             panel2 = new Panel();
+            printschedulebutton = new Button();
             label17 = new Label();
             dataGridView1 = new DataGridView();
             Sunday = new DataGridViewTextBoxColumn();
@@ -90,6 +91,9 @@
             radioButton6 = new RadioButton();
             comboBoxBindingSource = new BindingSource(components);
             autoCompleteCustomSourceBindingSource = new BindingSource(components);
+            printDialog1 = new PrintDialog();
+            printPreviewDialog1 = new PrintPreviewDialog();
+            clearButton = new Button();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)comboBoxBindingSource1).BeginInit();
@@ -105,6 +109,7 @@
             // 
             panel1.BackColor = Color.FromArgb(255, 184, 28);
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(clearButton);
             panel1.Controls.Add(LectureDisplay);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(button4);
@@ -146,10 +151,10 @@
             // LectureDisplay
             // 
             LectureDisplay.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            LectureDisplay.Location = new Point(7, 338);
+            LectureDisplay.Location = new Point(7, 333);
             LectureDisplay.Name = "LectureDisplay";
             LectureDisplay.ReadOnly = true;
-            LectureDisplay.Size = new Size(331, 157);
+            LectureDisplay.Size = new Size(331, 162);
             LectureDisplay.TabIndex = 57;
             LectureDisplay.Text = "";
             LectureDisplay.TextChanged += LectureDisplay_TextChanged;
@@ -228,7 +233,7 @@
             // 
             // button4
             // 
-            button4.Location = new Point(400, 101);
+            button4.Location = new Point(400, 103);
             button4.Name = "button4";
             button4.Size = new Size(75, 23);
             button4.TabIndex = 3;
@@ -249,7 +254,7 @@
             // button2
             // 
             button2.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            button2.Location = new Point(383, 452);
+            button2.Location = new Point(375, 449);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
             button2.TabIndex = 54;
@@ -260,7 +265,7 @@
             // button1
             // 
             button1.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.Location = new Point(383, 198);
+            button1.Location = new Point(375, 199);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 14;
@@ -532,6 +537,7 @@
             // 
             panel2.BackColor = Color.FromArgb(255, 184, 28);
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(printschedulebutton);
             panel2.Controls.Add(label17);
             panel2.Controls.Add(dataGridView1);
             panel2.Controls.Add(radioButton10);
@@ -541,6 +547,16 @@
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
             // 
+            // printschedulebutton
+            // 
+            printschedulebutton.Location = new Point(502, 3);
+            printschedulebutton.Name = "printschedulebutton";
+            printschedulebutton.Size = new Size(75, 23);
+            printschedulebutton.TabIndex = 58;
+            printschedulebutton.Text = "Print";
+            printschedulebutton.UseVisualStyleBackColor = true;
+            printschedulebutton.Click += printschedulebutton_Click;
+            // 
             // label17
             // 
             label17.AutoSize = true;
@@ -548,9 +564,9 @@
             label17.Location = new Point(3, 0);
             label17.Name = "label17";
             label17.RightToLeft = RightToLeft.Yes;
-            label17.Size = new Size(97, 28);
+            label17.Size = new Size(149, 28);
             label17.TabIndex = 57;
-            label17.Text = "Schedule";
+            label17.Text = "Schedule View";
             // 
             // dataGridView1
             // 
@@ -624,26 +640,27 @@
             panel3.Controls.Add(richTextBox2);
             panel3.Controls.Add(label14);
             panel3.Controls.Add(radioButton1);
-            panel3.Location = new Point(500, 420);
+            panel3.Location = new Point(500, 411);
             panel3.Name = "panel3";
-            panel3.Size = new Size(298, 100);
+            panel3.Size = new Size(298, 109);
             panel3.TabIndex = 2;
             // 
             // richTextBox2
             // 
             richTextBox2.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            richTextBox2.Location = new Point(8, 22);
+            richTextBox2.Location = new Point(8, 19);
             richTextBox2.Name = "richTextBox2";
-            richTextBox2.Size = new Size(279, 71);
+            richTextBox2.Size = new Size(279, 83);
             richTextBox2.TabIndex = 30;
             richTextBox2.Text = "";
             // 
             // label14
             // 
             label14.AutoSize = true;
+            label14.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label14.Location = new Point(3, 1);
             label14.Name = "label14";
-            label14.Size = new Size(121, 15);
+            label14.Size = new Size(127, 15);
             label14.TabIndex = 29;
             label14.Text = "Final Schedule Details";
             // 
@@ -665,26 +682,27 @@
             panel4.Controls.Add(label13);
             panel4.Controls.Add(richTextBox1);
             panel4.Controls.Add(radioButton6);
-            panel4.Location = new Point(804, 420);
+            panel4.Location = new Point(804, 411);
             panel4.Name = "panel4";
-            panel4.Size = new Size(289, 100);
+            panel4.Size = new Size(289, 109);
             panel4.TabIndex = 3;
             // 
             // label13
             // 
             label13.AutoSize = true;
+            label13.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label13.Location = new Point(3, 1);
             label13.Name = "label13";
-            label13.Size = new Size(107, 15);
+            label13.Size = new Size(113, 15);
             label13.TabIndex = 18;
             label13.Text = "Notifcations/Errors";
             // 
             // richTextBox1
             // 
             richTextBox1.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            richTextBox1.Location = new Point(3, 22);
+            richTextBox1.Location = new Point(3, 19);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(279, 71);
+            richTextBox1.Size = new Size(279, 83);
             richTextBox1.TabIndex = 17;
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
@@ -708,6 +726,31 @@
             // 
             autoCompleteCustomSourceBindingSource.DataMember = "AutoCompleteCustomSource";
             autoCompleteCustomSourceBindingSource.DataSource = comboBoxBindingSource;
+            // 
+            // printDialog1
+            // 
+            printDialog1.UseEXDialog = true;
+            // 
+            // printPreviewDialog1
+            // 
+            printPreviewDialog1.AutoScrollMargin = new Size(0, 0);
+            printPreviewDialog1.AutoScrollMinSize = new Size(0, 0);
+            printPreviewDialog1.ClientSize = new Size(400, 300);
+            printPreviewDialog1.Enabled = true;
+            printPreviewDialog1.Icon = (Icon)resources.GetObject("printPreviewDialog1.Icon");
+            printPreviewDialog1.Name = "printPreviewDialog1";
+            printPreviewDialog1.Visible = false;
+            printPreviewDialog1.Load += printPreviewDialog1_Load;
+            // 
+            // clearButton
+            // 
+            clearButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
+            clearButton.Location = new Point(375, 478);
+            clearButton.Name = "clearButton";
+            clearButton.Size = new Size(75, 23);
+            clearButton.TabIndex = 58;
+            clearButton.Text = "Clear";
+            clearButton.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -803,5 +846,9 @@
         private Label label17;
         private RichTextBox richTextBox2;
         private RichTextBox LectureDisplay;
+        private Button printschedulebutton;
+        private PrintDialog printDialog1;
+        private PrintPreviewDialog printPreviewDialog1;
+        private Button clearButton;
     }
 }
